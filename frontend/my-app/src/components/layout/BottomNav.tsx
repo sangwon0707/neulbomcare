@@ -8,7 +8,7 @@ import { cn } from "@/utils/cn"
 export function BottomNav() {
     const pathname = usePathname()
 
-    if (pathname === "/onboarding" || pathname === "/personality-test" || pathname === "/login") {
+    if (pathname === "/onboarding" || pathname === "/personality-test" || pathname === "/login" || pathname === "/welcome") {
         return null
     }
 
@@ -20,7 +20,7 @@ export function BottomNav() {
     ]
 
     return (
-        <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden">
+        <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:hidden pb-safe">
             <div className="flex h-16 items-center justify-around px-4">
                 {navItems.map((item) => {
                     const isActive = pathname === item.href

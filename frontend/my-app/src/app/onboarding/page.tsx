@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles } from "lucide-react"
@@ -21,8 +22,15 @@ export default function OnboardingPage() {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="mb-8"
                 >
-                    <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 shadow-inner">
-                        <Sparkles className="w-8 h-8 text-primary" />
+                    <div className="inline-flex items-center justify-center w-24 h-24 mb-8 rounded-[2rem] bg-gradient-to-br from-primary/10 to-secondary/10 shadow-sm">
+                        <div className="relative w-20 h-20">
+                            <Image
+                                src="/assets/logo_heart.png"
+                                alt="Neulbom Care Logo"
+                                fill
+                                className="object-contain"
+                            />
+                        </div>
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
                         나에게 딱 맞는 <br />
@@ -55,6 +63,8 @@ export default function OnboardingPage() {
                     </Button>
                 </motion.div>
             </div>
+
+
         </div>
     )
 }

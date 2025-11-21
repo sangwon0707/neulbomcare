@@ -28,14 +28,16 @@ export default function LoginPage() {
 
             {/* KakaoTalk Login Button */}
             <div className="w-full max-w-sm">
-                <Button
-                    className="w-full h-14 bg-[#FEE500] hover:bg-[#FEE500]/90 text-[#000000] font-semibold rounded-xl flex items-center justify-center gap-3 shadow-lg"
-                >
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <path d="M12 3C6.48 3 2 6.58 2 11C2 13.5 3.5 15.72 5.84 17.12L4.5 21.5L9.5 18.92C10.28 19.08 11.13 19.17 12 19.17C17.52 19.17 22 15.59 22 11.17C22 6.58 17.52 3 12 3Z" fill="currentColor" />
-                    </svg>
-                    카카오톡으로 시작하기
-                </Button>
+                <Link href="/welcome" className="w-full">
+                    <Button
+                        className="w-full h-14 bg-[#FEE500] hover:bg-[#FEE500]/90 text-[#000000] font-semibold rounded-xl flex items-center justify-center gap-3 shadow-lg"
+                    >
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 3C6.48 3 2 6.58 2 11C2 13.5 3.5 15.72 5.84 17.12L4.5 21.5L9.5 18.92C10.28 19.08 11.13 19.17 12 19.17C17.52 19.17 22 15.59 22 11.17C22 6.58 17.52 3 12 3Z" fill="currentColor" />
+                        </svg>
+                        카카오톡으로 시작하기
+                    </Button>
+                </Link>
 
                 <p className="text-xs text-gray-500 text-center mt-6">
                     로그인 시 <Link href="#" className="underline">이용약관</Link> 및{" "}
