@@ -19,7 +19,7 @@ export default function Screen9Schedule() {
 
   const styles = {
     container: {
-      minHeight: '100vh',
+      height: '100vh',
       background: background,
       display: 'flex',
       flexDirection: 'column' as const
@@ -27,7 +27,8 @@ export default function Screen9Schedule() {
     header: {
       background: background,
       color: 'black',
-      padding: '20px'
+      padding: '20px',
+      flexShrink: 0
     },
     headerBox: {
       background: 'white',
@@ -66,7 +67,8 @@ export default function Screen9Schedule() {
     content: {
       flex: 1,
       overflowY: 'auto' as const,
-      padding: '20px'
+      padding: '20px',
+      minHeight: 0
     },
     tabBar: {
       display: 'flex',
@@ -182,7 +184,8 @@ export default function Screen9Schedule() {
       background: background,
       borderTop: '1px solid #f0f0f0',
       display: 'flex',
-      gap: '10px'
+      gap: '10px',
+      flexShrink: 0
     },
     btnSecondary: {
       background: '#f0f0f0',
@@ -230,7 +233,7 @@ export default function Screen9Schedule() {
             style={{...styles.tab, ...(activeTab === 'monthly' ? styles.tabActive : {})}}
             onClick={() => setActiveTab('monthly')}
           >
-            월간
+            식단
           </button>
         </div>
 

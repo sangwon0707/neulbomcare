@@ -14,7 +14,7 @@ export default function Screen10CaregiverReview() {
 
   const styles = {
     container: {
-      minHeight: '100vh',
+      height: '100vh',
       background: background,
       display: 'flex',
       flexDirection: 'column' as const

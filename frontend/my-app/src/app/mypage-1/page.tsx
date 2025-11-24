@@ -1,0 +1,87 @@
+'use client';
+
+import Image from 'next/image';
+import Link from 'next/link';
+
+export default function CaregiverProfile() {
+  return (
+    <>
+      <style jsx global>{`
+        .material-icons-outlined {
+          font-size: 28px;
+        }
+        .progress-ring__circle {
+          transition: stroke-dashoffset 0.5s;
+          transform: rotate(-90deg);
+          transform-origin: 50% 50%;
+        }
+        body {
+          min-height: max(884px, 100dvh);
+        }
+      `}</style>
+
+      <div className="min-h-screen flex flex-col items-center p-6">
+        <div className="w-full max-w-sm mx-auto text-center flex flex-col pt-12">
+          <div>
+            <div className="mb-8">
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">매칭되었습니다</p>
+              <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">김미숙</h1>
+            </div>
+
+            <div className="relative flex justify-center items-center mb-6">
+            <svg className="absolute w-64 h-64" viewBox="0 0 120 120">
+              <circle
+                className="text-gray-100 dark:text-gray-800"
+                cx="60"
+                cy="60"
+                fill="transparent"
+                r="54"
+                stroke="currentColor"
+                strokeWidth="6"
+              />
+              <circle
+                className="progress-ring__circle text-teal-400"
+                cx="60"
+                cy="60"
+                fill="transparent"
+                r="54"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeWidth="6"
+                style={{ strokeDasharray: '339.292', strokeDashoffset: '84.823' }}
+              />
+            </svg>
+            <div className="w-48 h-48 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
+              <Image
+                alt="Profile picture of caregiver Kim Misuk"
+                className="w-full h-full object-cover"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDG5402m5QvlOGTA24iWbO3EkYVKqPrMc_6pVF4ASlOzTt3vix_3LejI54vcrmbsVzGRGAs_yOGlWdUl6urV702TaIYpf4_p6BilnIPVVFVDS5Ei9pHjPGaAzUfKpbyxmy7e7BjnjNTsh7NtAzNcMd8BnlMGb5GpXA_fNcx-Qrt2E1w9TevFjQqJwWGA7tbqw_tuPawMBgY9KKrcYE70dav2BQWg1Q-c0_cAPqvKPL0PTryAl63SB-rb0I9ry-9PwDO9AwXmsKlPPyu"
+                width={192}
+                height={192}
+              />
+            </div>
+            </div>
+          </div>
+
+          <div className="space-y-4 mt-8">
+            <Link href="/care-plans-create-1" className="w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex items-center shadow-sm hover:shadow-md transition-shadow">
+              <div className="bg-teal-400/10 p-3 rounded-lg mr-4">
+                <span className="material-icons-outlined text-teal-400"></span>
+              </div>
+              <span className="text-lg font-medium text-gray-800 dark:text-gray-100">AI 간병 일정 만들기</span>
+              <span className="material-icons-outlined text-gray-600 dark:text-gray-400 ml-auto"></span>
+            </Link>
+
+            <button className="w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex items-center shadow-sm hover:shadow-md transition-shadow">
+              <div className="bg-teal-400/10 p-3 rounded-lg mr-4">
+                <span className="material-icons-outlined text-teal-400"></span>
+              </div>
+              <span className="text-lg font-medium text-gray-800 dark:text-gray-100">채팅하기</span>
+              <span className="material-icons-outlined text-gray-600 dark:text-gray-400 ml-auto"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
