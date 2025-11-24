@@ -20,15 +20,6 @@ export default function Screen2PatientInfo() {
       display: 'flex',
       flexDirection: 'column' as const
     },
-    statusBar: {
-      height: '44px',
-      background: 'white',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '0 20px',
-      fontSize: '12px'
-    },
     navBar: {
       display: 'flex',
       alignItems: 'center',
@@ -49,14 +40,21 @@ export default function Screen2PatientInfo() {
     progressBar: {
       width: '100%',
       height: '4px',
-      background: '#f0f0f0',
+      background: 'transparent',
       borderRadius: '2px',
-      overflow: 'hidden'
+      display: 'flex',
+      gap: '4px'
     },
-    progressFill: {
+    progressSegment: {
+      flex: 1,
+      height: '100%',
+      background: '#e0e0e0',
+      borderRadius: '2px'
+    },
+    progressSegmentFilled: {
+      flex: 1,
       height: '100%',
       background: firstPrimary,
-      width: '20%',
       borderRadius: '2px'
     },
     content: {
@@ -175,16 +173,15 @@ export default function Screen2PatientInfo() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.statusBar}>
-        <span>9:41</span>
-        <span>●●●●</span>
-      </div>
-
       <div style={styles.navBar}>
         <button style={styles.backBtn} onClick={() => router.push('/')}>‹</button>
         <div style={styles.progress}>
           <div style={styles.progressBar}>
-            <div style={styles.progressFill}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegment}></div>
+            <div style={styles.progressSegment}></div>
+            <div style={styles.progressSegment}></div>
+            <div style={styles.progressSegment}></div>
           </div>
         </div>
         <div style={{fontSize: '14px', color: '#000', cursor: 'pointer'}}>건너뛰기</div>
