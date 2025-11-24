@@ -62,7 +62,36 @@ export default function Screen7Matching() {
       intro: '성실하고 꼼꼼하게 케어합니다. 인지 활동 프로그램 진행 가능합니다.',
       matchScore: 88,
       rate: 23000,
-      avatar: '👨‍⚕️'
+      avatar: '👨‍⚕️',
+      detailedProfile: {
+        residence: '경기도 부천시 소사구',
+        certifications: [
+          '요양보호사 1급 (2017년 취득)',
+          '재활운동지도사 자격 (2019년)',
+          '인지활동지도사 자격 (2020년)',
+          '응급처치 교육 수료 (2021년)'
+        ],
+        career: {
+          total: '7년 (2017년 ~ 현재)',
+          current: '희망재가요양센터 (2020년 ~ 현재)'
+        },
+        responsibilities: [
+          '일상생활 지원: 식사, 배설, 위생관리',
+          '거동 불편 어르신 이동 보조',
+          '치매 어르신 인지활동 프로그램 진행',
+          '재활운동 보조 및 지도',
+          '건강상태 체크 및 기록',
+          '특기: 인지활동 프로그램 개발, 재활운동 전문'
+        ],
+        strengths: [
+          '인지활동 프로그램 진행 능력',
+          '체계적이고 꼼꼼한 업무 처리',
+          '재활운동 전문 지식 보유',
+          '성실하고 책임감 있는 태도',
+          '어르신과의 라포 형성 능력'
+        ],
+        quote: '"어르신들의 남은 기능을 최대한 유지하고 향상시킬 수 있도록 최선을 다하겠습니다"'
+      }
     },
     {
       name: '박은영',
@@ -75,7 +104,36 @@ export default function Screen7Matching() {
       intro: '어르신들과 대화를 잘합니다. 오랜 경험으로 다양한 상황에 대처 가능합니다.',
       matchScore: 85,
       rate: 27000,
-      avatar: '👩‍⚕️'
+      avatar: '👩‍⚕️',
+      detailedProfile: {
+        residence: '경기도 부천시 중동',
+        certifications: [
+          '요양보호사 1급 (2012년 취득)',
+          '당뇨병 교육사 자격 (2014년)',
+          '영양사 자격 (2010년)',
+          '투약관리 전문교육 이수 (2016년)'
+        ],
+        career: {
+          total: '13년 (2012년 ~ 현재)',
+          current: '사랑돌봄 재가요양센터 (2015년 ~ 현재)'
+        },
+        responsibilities: [
+          '일상생활 지원: 식사, 배설, 위생관리',
+          '당뇨병 환자 혈당 관리 및 식단 조절',
+          '정확한 투약 관리 및 기록',
+          '영양 상태 체크 및 식사 케어',
+          '건강상태 모니터링 및 보고',
+          '특기: 당뇨 및 만성질환 관리, 영양 식단 관리'
+        ],
+        strengths: [
+          '12년 이상의 풍부한 현장 경험',
+          '당뇨병 관리 전문 지식',
+          '영양사 자격 보유로 식단 관리 우수',
+          '어르신과의 소통 능력 탁월',
+          '위기 상황 판단 및 대처 능력'
+        ],
+        quote: '"오랜 경험을 바탕으로 어르신들의 건강을 세심하게 돌보겠습니다"'
+      }
     }
   ]
 
@@ -431,10 +489,10 @@ export default function Screen7Matching() {
       <div style={styles.content}>
         {caregivers
           .filter(caregiver => {
-            // If 김미숙 is flipped, show only 김미숙
-            const isKimMisookFlipped = flippedCards['김미숙'] || false
-            if (isKimMisookFlipped) {
-              return caregiver.name === '김미숙'
+            // If any caregiver is flipped, show only that caregiver
+            const flippedCaregiver = Object.keys(flippedCards).find(name => flippedCards[name])
+            if (flippedCaregiver) {
+              return caregiver.name === flippedCaregiver
             }
             return true
           })
@@ -487,8 +545,8 @@ export default function Screen7Matching() {
                 </div>
               </div>
 
-              {/* Back of card - only for 김미숙 */}
-              {caregiver.name === '김미숙' && caregiver.detailedProfile && (
+              {/* Back of card - for all caregivers with detailedProfile */}
+              {caregiver.detailedProfile && (
                 <div style={styles.flipCardBack} onClick={() => handleCardClick(caregiver.name)}>
                   <button
                     style={styles.closeBtn}
@@ -501,7 +559,7 @@ export default function Screen7Matching() {
                   </button>
 
                   <div style={styles.detailedProfile}>
-                    <div style={styles.profileTitle}>김미숙 요양보호사 프로필</div>
+                    <div style={styles.profileTitle}>{caregiver.name} 요양보호사 프로필</div>
 
                     <div style={styles.profileSection}>
                       <div style={styles.profileSubtitle}>기본 정보</div>
