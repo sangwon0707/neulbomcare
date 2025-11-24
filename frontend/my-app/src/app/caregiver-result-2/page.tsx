@@ -124,7 +124,8 @@ export default function Screen7Matching() {
       flex: 1,
       overflowY: 'auto' as const,
       padding: '15px',
-      background: background
+      background: background,
+      minHeight: 0
     },
     caregiverCard: {
       background: 'white',
@@ -421,13 +422,7 @@ export default function Screen7Matching() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: background }}>
-      <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => router.push('/requirements')}>‹</button>
-        <div style={styles.navTitle}>추천 간병인</div>
-        <button style={styles.filterBtn}>⚙️</button>
-      </div>
-
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', background: background }}>
       <div style={styles.header}>
         <h2 style={styles.h2}>김영희님에게 적합한 간병인</h2>
         <p style={styles.p}>3명의 전문가를 찾았습니다</p>

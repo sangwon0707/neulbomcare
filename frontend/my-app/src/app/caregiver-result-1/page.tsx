@@ -10,7 +10,7 @@ export default function Screen8Loading() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/p13')
+      router.push('/caregiver-result-2')
     }, 3000)
 
     return () => clearTimeout(timer)
