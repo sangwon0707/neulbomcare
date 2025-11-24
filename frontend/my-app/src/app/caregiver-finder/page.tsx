@@ -28,7 +28,8 @@ export default function Screen6Requirements() {
 
   const styles = {
     container: {
-      minHeight: '100vh',
+      width: '100%',
+      height: '100vh',
       background: background,
       display: 'flex',
       flexDirection: 'column' as const
@@ -51,6 +52,30 @@ export default function Screen6Requirements() {
       textAlign: 'center' as const,
       fontWeight: 600,
       fontSize: '17px'
+    },
+    progress: {
+      flex: 1,
+      margin: '0 20px'
+    },
+    progressBar: {
+      width: '100%',
+      height: '4px',
+      background: 'transparent',
+      borderRadius: '2px',
+      display: 'flex',
+      gap: '4px'
+    },
+    progressSegment: {
+      flex: 1,
+      height: '100%',
+      background: '#e0e0e0',
+      borderRadius: '2px'
+    },
+    progressSegmentFilled: {
+      flex: 1,
+      height: '100%',
+      background: firstPrimary,
+      borderRadius: '2px'
     },
     content: {
       flex: 1,
@@ -238,9 +263,17 @@ export default function Screen6Requirements() {
   return (
     <div style={styles.container}>
       <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => router.push('/team')}>←</button>
-        <div style={styles.navTitle}>요구사항</div>
-        <div style={{width: '20px'}}></div>
+        <button style={styles.backBtn} onClick={() => router.push('/patient-condition-3')}>←</button>
+        <div style={styles.progress}>
+          <div style={styles.progressBar}>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+          </div>
+        </div>
+        <div style={{fontSize: '14px', color: '#000', cursor: 'pointer'}}>건너뛰기</div>
       </div>
 
       <div style={styles.content}>
