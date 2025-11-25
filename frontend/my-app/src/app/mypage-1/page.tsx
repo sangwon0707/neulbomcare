@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { background, firstPrimary, secondPrimary } from '../colors'
 
 export default function CaregiverProfile() {
   return (
@@ -49,20 +50,12 @@ export default function CaregiverProfile() {
           </div>
 
           <div className="space-y-4 mt-8">
-            <Link href="/care-plans-create-1" className="w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex items-center shadow-sm hover:shadow-md transition-shadow">
-              <div className="bg-teal-400/10 p-3 rounded-lg mr-4">
-                <span className="material-icons-outlined text-teal-400">calendar_today</span>
-              </div>
-              <span className="text-lg font-medium text-gray-800 dark:text-gray-100">AI 간병 일정 만들기</span>
-              <span className="material-icons-outlined text-gray-600 dark:text-gray-400 ml-auto">chevron_right</span>
+            <Link href="/care-plans-create-1" className="w-full border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex items-center justify-center shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: firstPrimary }}>
+              <span className="text-lg font-medium text-white">AI 간병 일정 만들기</span>
             </Link>
 
-            <button className="w-full bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex items-center shadow-sm hover:shadow-md transition-shadow">
-              <div className="bg-teal-400/10 p-3 rounded-lg mr-4">
-                <span className="material-icons-outlined text-teal-400">chat</span>
-              </div>
-              <span className="text-lg font-medium text-gray-800 dark:text-gray-100">채팅하기</span>
-              <span className="material-icons-outlined text-gray-600 dark:text-gray-400 ml-auto">chevron_right</span>
+            <button className="w-full border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex items-center justify-center shadow-sm hover:shadow-md transition-shadow" style={{ backgroundColor: firstPrimary }}>
+              <span className="text-lg font-medium text-white">채팅하기</span>
             </button>
           </div>
         </div>
