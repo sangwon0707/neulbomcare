@@ -10,21 +10,24 @@ export default function Screen2PatientInfo() {
     name: '',
     age: '',
     gender: 'female',
-    relationship: ''
+    relationship: '',
+    address: ''
   })
 
   const styles = {
     container: {
-      minHeight: '100vh',
+      height: '100vh',
       background: background,
       display: 'flex',
-      flexDirection: 'column' as const
+      flexDirection: 'column' as const,
+      overflow: 'hidden' as const
     },
     navBar: {
       display: 'flex',
       alignItems: 'center',
       padding: '15px 20px',
-      borderBottom: '1px solid #f0f0f0'
+      borderBottom: '1px solid #f0f0f0',
+      flexShrink: 0
     },
     backBtn: {
       fontSize: '20px',
@@ -154,9 +157,8 @@ export default function Screen2PatientInfo() {
       color: '#000'
     },
     bottomBar: {
-      padding: '20px',
-      background: background,
-      borderTop: '1px solid #f0f0f0'
+      padding: '20px 0',
+      marginTop: '20px'
     },
     nextButton: {
       width: '100%',
@@ -232,11 +234,11 @@ export default function Screen2PatientInfo() {
               주소 <span style={styles.required}>*</span>
             </label>
             <input
-              type="number"
+              type="text"
               style={styles.formInput}
               placeholder="예: 서울특별시 서초구 반포대로 222"
-              value={formData.age}
-              onChange={(e) => setFormData({...formData, age: e.target.value})}
+              value={formData.address}
+              onChange={(e) => setFormData({...formData, address: e.target.value})}
               required
             />
           </div>
@@ -244,10 +246,10 @@ export default function Screen2PatientInfo() {
 
 
         </form>
-      </div>
 
-      <div style={styles.bottomBar}>
-        <button style={styles.nextButton} onClick={() => router.push('/health-status')}>다음</button>
+        <div style={styles.bottomBar}>
+          <button style={styles.nextButton} onClick={() => router.push('/patient-condition-1')}>다음</button>
+        </div>
       </div>
     </div>
   )
