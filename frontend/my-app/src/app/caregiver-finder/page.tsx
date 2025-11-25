@@ -408,7 +408,7 @@ export default function Screen6Requirements() {
         </div>
 
         <div style={styles.bottomBar}>
-          <button style={styles.findButton} onClick={() => router.push('/matching')}>매칭 찾기</button>
+          <button style={styles.findButton} onClick={() => router.push('/caregiver-result-1')}>매칭 찾기</button>
         </div>
       </div>
     </div>
