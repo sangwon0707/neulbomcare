@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: 'bluedonulab-api'  # 여기에 실제 Azure App Service 이름 입력
+  AZURE_WEBAPP_NAME: 'neulbomcare'  # Azure App Service 이름
   PYTHON_VERSION: '3.12'
 
 jobs:
@@ -90,7 +90,7 @@ jobs:
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         package: './backend-deploy.zip'
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6E1F31532FB1401E8E2AD1CE74DD597F }}
         # startup-command는 Azure Portal에서 설정 (startup.sh 사용)
 
     # 9. 배포 후 워밍업 (Cold Start 방지)
