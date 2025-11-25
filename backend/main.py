@@ -1,12 +1,8 @@
-"""
-BluedonuLab Backend - FastAPI
-"""
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
 from app.core.database import engine, Base
-from app.routes import auth
+from app.routes import auth, profile, matching, care_execution, review
 
 settings = get_settings()
 
@@ -27,6 +23,10 @@ app.add_middleware(
 
 # 라우터 등록
 app.include_router(auth.router)
+app.include_router(profile.router, prefix="/api")
+app.include_router(matching.router, prefix="/api")
+app.include_router(care_execution.router, prefix="/api")
+app.include_router(review.router, prefix="/api")
 
 
 @app.on_event("startup")
