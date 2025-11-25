@@ -15,19 +15,11 @@ export default function Screen2PatientInfo() {
 
   const styles = {
     container: {
-      minHeight: '100vh',
+      height: '100vh',
       background: background,
       display: 'flex',
-      flexDirection: 'column' as const
-    },
-    statusBar: {
-      height: '44px',
-      background: 'white',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '0 20px',
-      fontSize: '12px'
+      flexDirection: 'column' as const,
+      overflow: 'hidden' as const
     },
     navBar: {
       display: 'flex',
@@ -49,14 +41,21 @@ export default function Screen2PatientInfo() {
     progressBar: {
       width: '100%',
       height: '4px',
-      background: '#f0f0f0',
+      background: 'transparent',
       borderRadius: '2px',
-      overflow: 'hidden'
+      display: 'flex',
+      gap: '4px'
     },
-    progressFill: {
+    progressSegment: {
+      flex: 1,
+      height: '100%',
+      background: '#e0e0e0',
+      borderRadius: '2px'
+    },
+    progressSegmentFilled: {
+      flex: 1,
       height: '100%',
       background: firstPrimary,
-      width: '20%',
       borderRadius: '2px'
     },
     content: {
@@ -175,16 +174,15 @@ export default function Screen2PatientInfo() {
 
   return (
     <div style={styles.container}>
-      <div style={styles.statusBar}>
-        <span>9:41</span>
-        <span>●●●●</span>
-      </div>
-
       <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => router.push('/')}>‹</button>
+        <button style={styles.backBtn} onClick={() => router.push('/guardians')}>‹</button>
         <div style={styles.progress}>
           <div style={styles.progressBar}>
-            <div style={styles.progressFill}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegment}></div>
+            <div style={styles.progressSegment}></div>
+            <div style={styles.progressSegment}></div>
           </div>
         </div>
         <div style={{fontSize: '14px', color: '#000', cursor: 'pointer'}}>건너뛰기</div>
@@ -267,10 +265,10 @@ export default function Screen2PatientInfo() {
             </div>
           </div>
         </form>
-      </div>
 
-      <div style={styles.bottomBar}>
-        <button style={styles.nextButton} onClick={() => router.push('/health-status')}>다음</button>
+        <div style={styles.bottomBar}>
+          <button style={styles.nextButton} onClick={() => router.push('/patient-condition-2')}>다음</button>
+        </div>
       </div>
     </div>
   )
