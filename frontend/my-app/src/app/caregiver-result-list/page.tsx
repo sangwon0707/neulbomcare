@@ -79,6 +79,12 @@ export default function Screen7Matching() {
     }
   ]
 
+  const handleSelectCaregiver = (caregiver: typeof caregivers[0]) => {
+    // Store selected caregiver in session storage and navigate to P15
+    sessionStorage.setItem('selectedCaregiver', JSON.stringify(caregiver))
+    router.push('/mypage_mycaregiver')
+  }
+
   const styles = {
     navBar: {
       display: 'flex',
@@ -488,7 +494,10 @@ export default function Screen7Matching() {
                 <div style={styles.caregiverFooter}>
                   <div style={styles.rate}>{caregiver.rate.toLocaleString()}원/시간</div>
                   <button style={styles.actionBtn} onClick={(e) => e.stopPropagation()}>프로필 보기</button>
-                  <button style={{...styles.actionBtn, ...styles.actionBtnPrimary}} onClick={(e) => e.stopPropagation()}>선택</button>
+                  <button style={{...styles.actionBtn, ...styles.actionBtnPrimary}} onClick={(e) => {
+                    e.stopPropagation()
+                    handleSelectCaregiver(caregiver)
+                  }}>선택</button>
                 </div>
               </div>
 

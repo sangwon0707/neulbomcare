@@ -1,9 +1,13 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { background, firstPrimary } from '../colors'
+import { background, firstPrimary } from '@/app/colors'
 
-export default function Screen16Messages() {
+interface Mypage2Props {
+  onNavigate?: (route: string) => void
+}
+
+export default function Mypage2({ onNavigate }: Mypage2Props) {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('chat')
   const [message, setMessage] = useState('')

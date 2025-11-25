@@ -85,3 +85,45 @@ credentials.json
 .DS_Store
 *.swp
 *.swo
+
+# ============================================
+# Backend Python
+# ============================================
+backend/.env
+backend/.env.local
+backend/.env.production
+backend/.venv/
+backend/venv/
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/**/*.pyc
+backend/*.log
+backend/**/*.log
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+
+# ============================================
+# Deployment
+# ============================================
+*.zip
+backend-deploy.zip
+publishprofile.xml
+.deployment
+
+# ============================================
+# Azure
+# ============================================
+.azure/
+azuredeploy.parameters.json
+
+# ============================================
+# IDE
+# ============================================
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+

@@ -1,17 +1,22 @@
-"use client"
+'use client'
 
 import { useRouter } from 'next/navigation'
-import { background, firstPrimary, secondPrimary } from '../colors'
+import { background, firstPrimary, secondPrimary } from '@/app/colors'
 
-export default function Screen13Dashboard() {
+interface Mypage3Props {
+  onNavigate?: (route: string) => void
+}
+
+export default function Mypage3({ onNavigate }: Mypage3Props) {
   const router = useRouter()
 
   const styles = {
     container: {
-      minHeight: '100vh',
       background: background,
       display: 'flex',
-      flexDirection: 'column' as const
+      flexDirection: 'column' as const,
+      minHeight: 'calc(100vh - 64px - 80px)',
+      paddingBottom: '100px'
     },
     statusBar: {
       height: '44px',

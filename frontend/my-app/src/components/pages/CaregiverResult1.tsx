@@ -1,31 +1,33 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { background, firstPrimary } from '../colors'
+import { background, firstPrimary } from '@/app/colors'
 import Image from 'next/image'
 
-export default function Screen8Loading() {
-  const router = useRouter()
+interface CaregiverResult1Props {
+  onNext: () => void
+}
 
+export default function CaregiverResult1({ onNext }: CaregiverResult1Props) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/p13')
+      onNext()
     }, 3000)
 
     return () => clearTimeout(timer)
-  }, [router])
+  }, [onNext])
 
   const styles = {
     container: {
-      minHeight: '100vh',
       background: background,
       display: 'flex',
       flexDirection: 'column' as const,
       justifyContent: 'center',
       alignItems: 'center',
       padding: '40px',
-      color: 'black'
+      color: 'black',
+      minHeight: 'calc(100vh - 64px - 80px)',
+      paddingBottom: '100px'
     },
     loaderContainer: {
       marginBottom: '50px',
@@ -165,7 +167,7 @@ export default function Screen8Loading() {
           </div>
 
           <div style={styles.messageContainer}>
-            <h2 style={styles.mainMessage}>AI가 케어 플랜을 생성하고 있어요</h2>
+            <h2 style={styles.mainMessage}>최적의 간병인을 찾고 있어요</h2>
 
             <div style={styles.stepMessages}>
               <div style={{...styles.stepMessage, animationDelay: '0s'}}>

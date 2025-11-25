@@ -29,10 +29,11 @@ app.add_middleware(
 app.include_router(auth.router)
 
 
-@app.on_event("startup")
-def startup_event():
-    """애플리케이션 시작 시 데이터베이스 테이블 생성"""
-    Base.metadata.create_all(bind=engine)
+# 테이블이 이미 존재하므로 자동 생성 비활성화
+# @app.on_event("startup")
+# def startup_event():
+#     """애플리케이션 시작 시 데이터베이스 테이블 생성"""
+#     Base.metadata.create_all(bind=engine)
 
 
 @app.get("/")

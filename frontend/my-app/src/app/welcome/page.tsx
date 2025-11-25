@@ -14,12 +14,16 @@ export default function WelcomePage() {
         if (step === 1) {
             setStep(2)
         } else {
-            router.push("/dashboard")
+            // 온보딩 완료 플래그 저장
+            localStorage.setItem('onboarded', 'true')
+            router.push("/home")
         }
     }
 
     const handleSkip = () => {
-        router.push("/dashboard")
+        // 온보딩 완료 플래그 저장
+        localStorage.setItem('onboarded', 'true')
+        router.push("/home")
     }
 
     return (
