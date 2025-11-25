@@ -159,7 +159,7 @@ export default function Screen2PatientInfo() {
     bottomBar: {
       padding: '20px 0',
       marginTop: '10px',
-      paddingBottom: '100px'
+      paddingBottom: '10px'
     },
     nextButton: {
       width: '100%',

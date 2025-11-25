@@ -60,7 +60,7 @@ export default function Screen2PatientInfo() {
     },
     content: {
       flex: 1,
-      overflowY: 'auto' as const,
+      overflowY: 'hidden' as const,
       padding: '30px 20px'
     },
     headerText: {
