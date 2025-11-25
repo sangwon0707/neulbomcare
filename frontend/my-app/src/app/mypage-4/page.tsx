@@ -267,8 +267,15 @@ export default function Screen14Checklist() {
     }
   }
 
+  const containerStyle = {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    height: '100vh',
+    overflow: 'hidden'
+  }
+
   return (
-    <>
+    <div style={containerStyle}>
       <div style={styles.header}>
         <div style={styles.patientInfo}>
           <div style={styles.patientName}>김영희 어머니 (78세)</div>
@@ -398,6 +405,6 @@ export default function Screen14Checklist() {
           <div style={styles.navLabel}>리포트</div>
         </button>
       </div>
-    </>
+    </div>
   )
 }
