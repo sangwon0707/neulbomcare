@@ -119,7 +119,9 @@ export default function Screen3HealthStatus() {
     },
     diseaseCard: {
       padding: '15px',
-      border: '2px solid #e0e0e0',
+      borderWidth: '2px',
+      borderStyle: 'solid',
+      borderColor: '#e0e0e0',
       borderRadius: '12px',
       textAlign: 'center' as const,
       cursor: 'pointer',
@@ -156,7 +158,9 @@ export default function Screen3HealthStatus() {
     },
     mobilityOption: {
       padding: '15px',
-      border: '2px solid #e0e0e0',
+      borderWidth: '2px',
+      borderStyle: 'solid',
+      borderColor: '#e0e0e0',
       borderRadius: '12px',
       cursor: 'pointer',
       transition: 'all 0.2s',
