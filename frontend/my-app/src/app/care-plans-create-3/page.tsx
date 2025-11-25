@@ -14,7 +14,7 @@ export default function Screen10CaregiverReview() {
 
   const styles = {
     container: {
-      minHeight: '100vh',
+      height: '100vh',
       background: background,
       display: 'flex',
       flexDirection: 'column' as const
@@ -24,7 +24,7 @@ export default function Screen10CaregiverReview() {
       alignItems: 'center',
       padding: '15px 20px',
       borderBottom: '1px solid #f0f0f0',
-      background: 'white'
+      background: background
     },
     backBtn: {
       fontSize: '20px',
@@ -362,16 +362,16 @@ export default function Screen10CaregiverReview() {
             onChange={(e) => setOverallFeedback(e.target.value)}
           />
         </div>
-      </div>
 
-      <div style={styles.bottomBar}>
-        <button style={{...styles.btn, ...styles.btnSecondary}}>임시 저장</button>
-        <button
-          style={{...styles.btn, ...styles.btnPrimary}}
-          onClick={() => router.push('/ai-validation')}
-        >
-          검토 완료
-        </button>
+        <div style={{...styles.bottomBar, paddingBottom: '100px'}}>
+          <button style={{...styles.btn, ...styles.btnSecondary}}>임시 저장</button>
+          <button
+            style={{...styles.btn, ...styles.btnPrimary}}
+            onClick={() => router.push('/ai-validation')}
+          >
+            검토 완료
+          </button>
+        </div>
       </div>
     </div>
   )

@@ -8,10 +8,11 @@ export default function Screen11AIValidation() {
 
   const styles = {
     container: {
-      minHeight: '100vh',
+      height: '100vh',
       background: background,
       display: 'flex',
-      flexDirection: 'column' as const
+      flexDirection: 'column' as const,
+      overflow: 'hidden' as const
     },
     navBar: {
       display: 'flex',
@@ -340,11 +341,11 @@ export default function Screen11AIValidation() {
             <button style={{...styles.actionBtn, ...styles.actionBtnPrimary}}>원안 유지</button>
           </div>
         </div>
-      </div>
 
-      <div style={styles.bottomBar}>
-        <button style={{...styles.btn, ...styles.btnOutline}}>간병인과 대화</button>
-        <button style={{...styles.btn, ...styles.btnPrimary}}>선택 항목 적용</button>
+        <div style={{...styles.bottomBar, paddingBottom: '100px'}}>
+          <button style={{...styles.btn, ...styles.btnOutline}}>간병인과 대화</button>
+          <button style={{...styles.btn, ...styles.btnPrimary}}>선택 항목 적용</button>
+        </div>
       </div>
     </div>
   )
