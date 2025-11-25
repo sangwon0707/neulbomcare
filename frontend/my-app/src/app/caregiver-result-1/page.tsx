@@ -10,7 +10,7 @@ export default function Screen8Loading() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/p13')
+      router.push('/caregiver-result-2')
     }, 3000)
 
     return () => clearTimeout(timer)
@@ -160,7 +160,7 @@ export default function Screen8Loading() {
           <div style={styles.loaderContainer}>
             <div style={styles.loadingRing}></div>
             <div style={styles.loader}>
-              <Image src="/logo-fin-1.png" alt="Logo" width={64} height={64} style={styles.loaderIcon} />
+              <Image src="/assets/logo.png" alt="Logo" width={64} height={64} style={styles.loaderIcon} />
             </div>
           </div>
 
