@@ -23,10 +23,11 @@ export default function Screen4Medication() {
 
   const styles = {
     container: {
-      minHeight: '100vh',
+      height: '100vh',
       background: background,
       display: 'flex',
-      flexDirection: 'column' as const
+      flexDirection: 'column' as const,
+      overflow: 'hidden' as const
     },
     navBar: {
       display: 'flex',
@@ -48,14 +49,21 @@ export default function Screen4Medication() {
     progressBar: {
       width: '100%',
       height: '4px',
-      background: '#f0f0f0',
+      background: 'transparent',
       borderRadius: '2px',
-      overflow: 'hidden'
+      display: 'flex',
+      gap: '4px'
     },
-    progressFill: {
+    progressSegment: {
+      flex: 1,
+      height: '100%',
+      background: '#e0e0e0',
+      borderRadius: '2px'
+    },
+    progressSegmentFilled: {
+      flex: 1,
       height: '100%',
       background: firstPrimary,
-      width: '60%',
       borderRadius: '2px'
     },
     content: {
@@ -183,9 +191,9 @@ export default function Screen4Medication() {
       marginTop: '5px'
     },
     bottomBar: {
-      padding: '20px',
-      background: background,
-      borderTop: '1px solid #f0f0f0'
+      padding: '20px 0',
+      marginTop: '10px',
+      paddingBottom: '100px'
     },
     nextButton: {
       width: '100%',
@@ -203,13 +211,17 @@ export default function Screen4Medication() {
   return (
     <div style={styles.container}>
       <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => router.push('/health-status')}>‹</button>
+        <button style={styles.backBtn} onClick={() => router.push('/patient-condition-2')}>‹</button>
         <div style={styles.progress}>
           <div style={styles.progressBar}>
-            <div style={styles.progressFill}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegment}></div>
           </div>
         </div>
-        <div style={{width: '60px'}}></div>
+        <div style={{fontSize: '14px', color: '#000', cursor: 'pointer'}}>건너뛰기</div>
       </div>
 
       <div style={styles.content}>
@@ -276,10 +288,10 @@ export default function Screen4Medication() {
             이 정보는 간병인과 AI 케어 플랜에 반영됩니다
           </div>
         </div>
-      </div>
 
-      <div style={styles.bottomBar}>
-        <button style={styles.nextButton} onClick={() => router.push('/team')}>다음</button>
+        <div style={styles.bottomBar}>
+          <button style={styles.nextButton} onClick={() => router.push('/caregiver-finder')}>다음</button>
+        </div>
       </div>
     </div>
   )

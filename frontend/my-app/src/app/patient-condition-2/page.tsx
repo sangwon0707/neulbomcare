@@ -38,10 +38,11 @@ export default function Screen3HealthStatus() {
   const styles = {
     container: {
       width: '100%',
-      minHeight: '100vh',
+      height: '100vh',
       background: background,
       display: 'flex',
-      flexDirection: 'column' as const
+      flexDirection: 'column' as const,
+      overflow: 'hidden' as const
     },
     navBar: {
       display: 'flex',
@@ -63,14 +64,21 @@ export default function Screen3HealthStatus() {
     progressBar: {
       width: '100%',
       height: '4px',
-      background: '#f0f0f0',
+      background: 'transparent',
       borderRadius: '2px',
-      overflow: 'hidden'
+      display: 'flex',
+      gap: '4px'
     },
-    progressFill: {
+    progressSegment: {
+      flex: 1,
+      height: '100%',
+      background: '#e0e0e0',
+      borderRadius: '2px'
+    },
+    progressSegmentFilled: {
+      flex: 1,
       height: '100%',
       background: firstPrimary,
-      width: '40%',
       borderRadius: '2px'
     },
     content: {
@@ -178,9 +186,9 @@ export default function Screen3HealthStatus() {
       color: '#666'
     },
     bottomBar: {
-      padding: '20px',
-      background: background,
-      borderTop: '1px solid #f0f0f0'
+      padding: '20px 0',
+      marginTop: '10px',
+      paddingBottom: '100px'
     },
     nextButton: {
       width: '100%',
@@ -198,13 +206,17 @@ export default function Screen3HealthStatus() {
   return (
     <div style={styles.container}>
       <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => navigate('/patient-info')}>‹</button>
+        <button style={styles.backBtn} onClick={() => navigate('/patient-condition-1')}>‹</button>
         <div style={styles.progress}>
           <div style={styles.progressBar}>
-            <div style={styles.progressFill}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegment}></div>
+            <div style={styles.progressSegment}></div>
           </div>
         </div>
-        <div style={{width: '60px'}}></div>
+        <div style={{fontSize: '14px', color: '#000', cursor: 'pointer'}}>건너뛰기</div>
       </div>
 
       <div style={styles.content}>
@@ -268,10 +280,10 @@ export default function Screen3HealthStatus() {
             ))}
           </div>
         </div>
-      </div>
 
-      <div style={styles.bottomBar}>
-        <button style={styles.nextButton} onClick={() => navigate('/medication')}>다음</button>
+        <div style={styles.bottomBar}>
+          <button style={styles.nextButton} onClick={() => navigate('/patient-condition-3')}>다음</button>
+        </div>
       </div>
     </div>
   )

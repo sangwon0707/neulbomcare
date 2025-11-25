@@ -155,9 +155,9 @@ export default function Screen2PatientInfo() {
       color: '#000'
     },
     bottomBar: {
-      padding: '20px',
-      background: background,
-      borderTop: '1px solid #f0f0f0'
+      padding: '20px 0',
+      marginTop: '10px',
+      paddingBottom: '100px'
     },
     nextButton: {
       width: '100%',
