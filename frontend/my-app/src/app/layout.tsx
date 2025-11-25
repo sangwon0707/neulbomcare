@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <div className="w-full max-w-[430px] min-h-screen bg-background relative shadow-2xl flex flex-col">
           <Header />
-          <main className="flex-1 pb-16">{children}</main>
+          <main className="flex-1 pb-16 overflow-y-auto">{children}</main>
           <BottomNav />
         </div>
       </body>
