@@ -8,11 +8,11 @@ import { ArrowRight } from "lucide-react"
 
 export default function RootPage() {
     return (
-        <div className="flex flex-col min-h-screen bg-white relative overflow-hidden">
+        <div className="flex flex-col min-h-screen bg-[#f9f7f2] relative overflow-hidden font-['Pretendard']">
             {/* Background Gradients */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                <div className="absolute top-[-10%] right-[-20%] w-[500px] h-[500px] bg-purple-200/40 rounded-full blur-3xl" />
-                <div className="absolute bottom-[-10%] left-[-20%] w-[500px] h-[500px] bg-pink-200/40 rounded-full blur-3xl" />
+                <div className="absolute top-[-10%] right-[-20%] w-[500px] h-[500px] bg-[#f9f7f2] rounded-full blur-3xl" />
+                <div className="absolute bottom-[-10%] left-[-20%] w-[500px] h-[500px] bg-[#f9f7f2] rounded-full blur-3xl" />
             </div>
 
             <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center">
@@ -25,7 +25,7 @@ export default function RootPage() {
                     <div className="inline-flex items-center justify-center w-24 h-24 mb-8 rounded-[2rem] bg-gradient-to-br from-primary/10 to-secondary/10 shadow-sm">
                         <div className="relative w-20 h-20">
                             <Image
-                                src="/assets/logo_heart.png"
+                                src="/assets/logo_color.png"
                                 alt="Neulbom Care Logo"
                                 fill
                                 className="object-contain"
@@ -34,7 +34,7 @@ export default function RootPage() {
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
                         나에게 딱 맞는 <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                        <span className="text-black">
                             AI 간병인 매칭
                         </span>
                     </h1>
@@ -63,8 +63,6 @@ export default function RootPage() {
                     </Button>
                 </motion.div>
             </div>
-
-
         </div>
     )
 }

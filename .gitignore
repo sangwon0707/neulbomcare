@@ -127,3 +127,31 @@ azuredeploy.parameters.json
 *.swo
 *~
 
+# ============================================
+# 문서 및 기획 파일 (루트 디렉토리)
+# ============================================
+# 설계 문서
+늘봄케어_API_엔드포인트_설계.md
+API_CONTRACT.md
+BACKEND_TASKS.md
+FRONTEND_TASKS.md
+DB_SCHEMA_MIGRATION.md
+DB_SCHEMA_MIGRATION.sql
+database_schema_sql.md
+
+# PDF 분석 문서 (UUID 포함 파일명)
+*_frontend_*.pdf
+*_backend_*.pdf
+
+# 스크린샷 (보안상 제외)
+screenshot*.png
+screenshot*.jpg
+*.png
+*.jpg
+
+# Playwright MCP (테스트 자동화)
+.playwright-mcp/
+
+# 프론트엔드 백업 폴더 (test02 브랜치 복사본)
+frontend-new/
+
