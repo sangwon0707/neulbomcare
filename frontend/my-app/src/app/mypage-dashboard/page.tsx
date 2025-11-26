@@ -1,13 +1,104 @@
 "use client"
 
 import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
 import { background, firstPrimary, secondPrimary } from '../colors'
+import { apiGet } from '@/lib/api'
+import ErrorAlert from '@/components/ErrorAlert'
+import type { DashboardResponse } from '@/types/api'
 
 export default function Screen13Dashboard() {
   const router = useRouter()
+  const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  // 기본 데이터 (API에서 데이터가 없을 경우 사용)
+  const defaultData: DashboardResponse = {
+    user: {
+      user_id: 1,
+      name: '보호자',
+      email: 'guardian@example.com',
+      phone: '010-1234-5678',
+      user_type: 'guardian'
+    },
+    guardian: {
+      guardian_id: 1,
+      address: '서울특별시 서초구',
+      relationship: '자녀'
+    },
+    patients: [{
+      patient_id: 1,
+      name: '환자',
+      age: 78,
+      care_level: '경도'
+    }],
+    active_matching: {
+      caregiver_name: '김미숙',
+      match_score: 92,
+      start_date: '2025-11-12'
+    }
+  }
+
+  useEffect(() => {
+    fetchDashboardData()
+  }, [])
+
+  const fetchDashboardData = async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await apiGet<DashboardResponse>('/api/users/me/dashboard')
+      setDashboardData(response)
+    } catch (err) {
+      console.error('대시보드 데이터 조회 실패:', err)
+      // 에러 시 세션 스토리지에서 데이터 복원 시도
+      const selectedCaregiver = sessionStorage.getItem('selectedCaregiver')
+      if (selectedCaregiver) {
+        const caregiver = JSON.parse(selectedCaregiver)
+        setDashboardData({
+          ...defaultData,
+          active_matching: {
+            caregiver_name: caregiver.caregiver_name || '김미숙',
+            match_score: caregiver.match_score || 92,
+            start_date: new Date().toISOString().split('T')[0]
+          }
+        })
+      } else {
+        setDashboardData(defaultData)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleCaregiverCardClick = () => {
     router.push('/mypage_mycaregiver')
+  }
+
+  const getPatientName = () => {
+    if (dashboardData?.patients && dashboardData.patients.length > 0) {
+      return dashboardData.patients[0].name
+    }
+    return '환자'
+  }
+
+  const getCaregiverInfo = () => {
+    if (dashboardData?.active_matching) {
+      return dashboardData.active_matching
+    }
+    return { caregiver_name: '김미숙', match_score: 92, start_date: '' }
+  }
+
+  const getCurrentDate = () => {
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = today.getMonth() + 1
+    const date = today.getDate()
+    const days = ['일', '월', '화', '수', '목', '금', '토']
+    const day = days[today.getDay()]
+    return `${year}년 ${month}월 ${date}일 ${day}요일`
   }
 
   const styles = {
@@ -312,55 +403,83 @@ export default function Screen13Dashboard() {
     },
     navLabel: {
       fontSize: '11px'
+    },
+    loadingContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '200px',
+      fontSize: '14px',
+      color: '#666'
     }
   }
 
+  if (loading) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.header}>
+          <div style={styles.date}>{getCurrentDate()}</div>
+        </div>
+        <div style={styles.loadingContainer}>
+          대시보드를 불러오는 중...
+        </div>
+      </div>
+    )
+  }
+
+  const caregiverInfo = getCaregiverInfo()
+
   return (
     <div style={styles.container}>
+      <ErrorAlert error={error} onClose={() => setError(null)} />
+
       <div style={styles.header}>
-        <div style={styles.date}>2025년 11월 12일 화요일</div>
+        <div style={styles.date}>{getCurrentDate()}</div>
         <div style={styles.patientInfo}>
           <div style={styles.patientAvatar}>👵</div>
           <div style={styles.patientDetails}>
-            <h2 style={styles.patientDetailsH2}>김영희 어머니</h2>
-            <span style={styles.statusBadge}>양호 😊</span>
+            <h2 style={styles.patientDetailsH2}>{getPatientName()}</h2>
+            <span style={styles.statusBadge}>양호</span>
           </div>
         </div>
       </div>
 
       <div style={styles.content}>
         {/* Caregiver Section */}
-        <div style={styles.caregiverSection}>
-          <div style={styles.sectionTitle}>나의 간병인</div>
-          <div
-            style={styles.caregiverCard}
-            onClick={handleCaregiverCardClick}
-            onMouseEnter={(e) => {
-              const el = e.currentTarget as HTMLElement
-              el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'
-              el.style.transform = 'translateY(-2px)'
-            }}
-            onMouseLeave={(e) => {
-              const el = e.currentTarget as HTMLElement
-              el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)'
-              el.style.transform = 'translateY(0)'
-            }}
-          >
-            <div style={styles.caregiverAvatar}>👩‍⚕️</div>
-            <div style={styles.caregiverInfo}>
-              <div style={styles.caregiverName}>김미숙</div>
-              <div style={styles.caregiverMeta}>
-                <span style={styles.rating}>⭐ 4.9</span>
-                <span>(127건)</span>
+        {dashboardData?.active_matching && (
+          <div style={styles.caregiverSection}>
+            <div style={styles.sectionTitle}>나의 간병인</div>
+            <div
+              style={styles.caregiverCard}
+              onClick={handleCaregiverCardClick}
+              onMouseEnter={(e) => {
+                const el = e.currentTarget as HTMLElement
+                el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'
+                el.style.transform = 'translateY(-2px)'
+              }}
+              onMouseLeave={(e) => {
+                const el = e.currentTarget as HTMLElement
+                el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)'
+                el.style.transform = 'translateY(0)'
+              }}
+            >
+              <div style={styles.caregiverAvatar}>👩‍⚕️</div>
+              <div style={styles.caregiverInfo}>
+                <div style={styles.caregiverName}>{caregiverInfo.caregiver_name}</div>
+                <div style={styles.caregiverMeta}>
+                  <span style={styles.rating}>{caregiverInfo.match_score}% 매칭</span>
+                </div>
+                <div style={styles.caregiverExp}>
+                  {caregiverInfo.start_date && `시작일: ${caregiverInfo.start_date}`}
+                </div>
               </div>
-              <div style={styles.caregiverExp}>경력 8년</div>
+              <div style={{fontSize: '18px', display: 'flex', alignItems: 'center'}}>›</div>
             </div>
-            <div style={{fontSize: '18px', display: 'flex', alignItems: 'center'}}>›</div>
           </div>
-        </div>
+        )}
 
         <div style={styles.progressCard}>
-          <h3 style={styles.progressCardH3}>📊 오늘의 진행 상황</h3>
+          <h3 style={styles.progressCardH3}>오늘의 진행 상황</h3>
           <div style={styles.progressBar}>
             <div style={styles.progressFill}></div>
           </div>
@@ -373,13 +492,13 @@ export default function Screen13Dashboard() {
             <div style={styles.nextActivityIcon}>🎯</div>
             <div style={styles.nextActivityInfo}>
               <div style={styles.nextActivityTime}>다음 활동</div>
-              <div style={styles.nextActivityTitle}>15:00 말벗/여가활동 - 아들 이준호</div>
+              <div style={styles.nextActivityTitle}>15:00 말벗/여가활동</div>
             </div>
           </div>
         </div>
 
         <div style={styles.warningCard}>
-          <h4 style={styles.warningCardH4}>⚠️ 확인 필요</h4>
+          <h4 style={styles.warningCardH4}>확인 필요</h4>
           <div style={styles.warningContent}>
             혈압이 평소보다 약간 높습니다<br />
             (정상: 120/80, 현재: 135/82)
@@ -391,29 +510,29 @@ export default function Screen13Dashboard() {
         </div>
 
         <div style={styles.feedCard}>
-          <h3 style={styles.feedCardH3}>🔔 실시간 업데이트</h3>
+          <h3 style={styles.feedCardH3}>실시간 업데이트</h3>
 
           <div style={styles.feedItem}>
-            <div style={styles.feedTime}>14:32 ✅ 낮잠/휴식 완료</div>
+            <div style={styles.feedTime}>14:32 낮잠/휴식 완료</div>
             <div style={styles.feedContent}>
               간병인: "1시간 30분 푹 주무셨어요"
             </div>
           </div>
 
           <div style={styles.feedItem}>
-            <div style={styles.feedTime}>12:15 ✅ 점심 식사 완료</div>
+            <div style={styles.feedTime}>12:15 점심 식사 완료</div>
             <div style={styles.feedContent}>
               간병인: "식사량 80% 완료"
             </div>
-            <div style={styles.feedMeta}>📸 사진 1장</div>
+            <div style={styles.feedMeta}>사진 1장</div>
           </div>
 
           <div style={styles.feedItem}>
-            <div style={styles.feedTime}>08:05 ✅ 약 복용 완료</div>
+            <div style={styles.feedTime}>08:05 약 복용 완료</div>
             <div style={styles.feedContent}>
               간병인: "모든 약 복용 확인"
             </div>
-            <div style={styles.feedMeta}>⚠️ 혈압: 135/82 (약간 높음)</div>
+            <div style={styles.feedMeta}>혈압: 135/82 (약간 높음)</div>
           </div>
         </div>
 

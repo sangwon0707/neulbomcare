@@ -7,6 +7,9 @@ import { ChatBubble } from "@/components/ui/chat-bubble"
 import { Button } from "@/components/ui/button"
 import { Send, Sparkles } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { apiPost } from "@/lib/api"
+import ErrorAlert from "@/components/ErrorAlert"
+import type { PersonalityTestRequest, PersonalityTestResponse } from "@/types/api"
 
 interface Message {
     id: number
@@ -20,6 +23,13 @@ export default function PersonalityTestPage() {
     const [step, setStep] = useState(0)
     const [inputText, setInputText] = useState("")
     const [isTyping, setIsTyping] = useState(false)
+    const [answers, setAnswers] = useState({
+        step1: "",
+        step2: "",
+        step3: ""
+    })
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState<Error | null>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const initialized = useRef(false)
 
@@ -46,7 +56,7 @@ export default function PersonalityTestPage() {
             initialized.current = true
             setTimeout(() => setIsTyping(true), 0)
             setTimeout(() => {
-                addMessage("안녕하세요! 늘봄케어 AI 매니저 늘보미입니다. ✨", true)
+                addMessage("안녕하세요! 늘봄케어 AI 매니저 늘보미입니다.", true)
                 setIsTyping(true)
                 setTimeout(() => {
                     addMessage("어떤 분을 위한 간병인을 찾고 계신가요?", true)
@@ -69,11 +79,46 @@ export default function PersonalityTestPage() {
         processNextStep(inputText)
     }
 
+    const submitPersonalityTest = async () => {
+        setLoading(true)
+        setError(null)
+
+        try {
+            const payload: PersonalityTestRequest = {
+                user_type: 'guardian',
+                answers: {
+                    step1: answers.step1,
+                    step2: answers.step2,
+                    step3: answers.step3
+                }
+            }
+
+            const response = await apiPost<PersonalityTestResponse>(
+                '/api/personality-tests',
+                payload
+            )
+
+            console.log('성향 테스트 완료:', response)
+
+            // 테스트 결과를 세션 스토리지에 저장
+            sessionStorage.setItem('personality_test_id', response.test_id.toString())
+            sessionStorage.setItem('personality_scores', JSON.stringify(response.scores))
+            sessionStorage.setItem('ai_analysis', response.ai_analysis)
+
+        } catch (err) {
+            console.error('성향 테스트 실패:', err)
+            setError(err as Error)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const processNextStep = (userResponse: string) => {
         setIsTyping(true)
 
         setTimeout(() => {
             if (step === 1) {
+                setAnswers(prev => ({ ...prev, step1: userResponse }))
                 addMessage(`${userResponse}님을 위한 케어시군요. 알겠습니다.`, true)
                 setIsTyping(true)
                 setTimeout(() => {
@@ -81,6 +126,7 @@ export default function PersonalityTestPage() {
                     setStep(2)
                 }, 1000)
             } else if (step === 2) {
+                setAnswers(prev => ({ ...prev, step2: userResponse }))
                 addMessage(`${userResponse}을(를) 최우선으로 고려하겠습니다.`, true)
                 setIsTyping(true)
                 setTimeout(() => {
@@ -88,19 +134,54 @@ export default function PersonalityTestPage() {
                     setStep(3)
                 }, 1000)
             } else if (step === 3) {
-                addMessage("모든 정보를 확인했습니다! 분석을 시작할게요. 🔍", true)
-                setTimeout(() => {
-                    setStep(4) // Show result
-                }, 2000)
+                setAnswers(prev => ({ ...prev, step3: userResponse }))
+                addMessage("모든 정보를 확인했습니다! 분석을 시작할게요.", true)
+
+                // API 호출
+                const finalAnswers = {
+                    step1: answers.step1,
+                    step2: answers.step2,
+                    step3: userResponse
+                }
+                setAnswers(finalAnswers)
+
+                setTimeout(async () => {
+                    // 성향 테스트 API 호출
+                    setLoading(true)
+                    try {
+                        const payload: PersonalityTestRequest = {
+                            user_type: 'guardian',
+                            answers: finalAnswers
+                        }
+
+                        const response = await apiPost<PersonalityTestResponse>(
+                            '/api/personality-tests',
+                            payload
+                        )
+
+                        console.log('성향 테스트 완료:', response)
+                        sessionStorage.setItem('personality_test_id', response.test_id.toString())
+                        sessionStorage.setItem('personality_scores', JSON.stringify(response.scores))
+                        sessionStorage.setItem('ai_analysis', response.ai_analysis)
+                    } catch (err) {
+                        console.error('성향 테스트 실패:', err)
+                        // 에러가 발생해도 결과 화면은 표시
+                    } finally {
+                        setLoading(false)
+                        setStep(4) // Show result
+                    }
+                }, 1500)
             }
         }, 1000)
     }
 
     return (
         <div className="flex flex-col h-[100dvh] bg-gradient-to-br from-purple-50/30 via-pink-50/20 to-blue-50/30 max-w-[430px] mx-auto overflow-hidden">
+            <ErrorAlert error={error} onClose={() => setError(null)} />
+
             {/* Chat Area */}
             <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-6 pb-4 flex flex-col justify-start min-h-0">
-                <div className="h-24 flex-shrink-0" /> {/* Top Spacer */}
+                <div className="h-24 shrink-0" /> {/* Top Spacer */}
                 <div className="space-y-2">
                     <AnimatePresence>
                         {messages.map((msg) => (
@@ -108,7 +189,7 @@ export default function PersonalityTestPage() {
                         ))}
                     </AnimatePresence>
 
-                    {isTyping && (
+                    {(isTyping || loading) && (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -128,7 +209,7 @@ export default function PersonalityTestPage() {
 
             {/* Input Area */}
             {step !== 4 && (
-                <div className="bg-white/95 backdrop-blur-md pt-4 px-4 pb-0 flex-shrink-0 border-t border-gray-100">
+                <div className="bg-white/95 backdrop-blur-md pt-4 px-4 pb-0 shrink-0 border-t border-gray-100">
 
                     {/* Options for Step 1 */}
                     {step === 1 && !isTyping && (
@@ -185,7 +266,7 @@ export default function PersonalityTestPage() {
                             placeholder="늘봄케어에 대해 무엇이든 물어보세요"
                             className="rounded-full border-gray-200 bg-gray-50 focus:bg-white transition-colors text-sm"
                         />
-                        <Button type="submit" size="icon" className="rounded-full bg-primary hover:bg-primary/90 shrink-0" disabled={!inputText.trim() || isTyping}>
+                        <Button type="submit" size="icon" className="rounded-full bg-primary hover:bg-primary/90 shrink-0" disabled={!inputText.trim() || isTyping || loading}>
                             <Send className="w-4 h-4" />
                         </Button>
                     </form>
@@ -223,10 +304,10 @@ export default function PersonalityTestPage() {
                                     지금 바로 연결해드릴게요.
                                 </p>
                                 <Button
-                                    onClick={() => router.push("/login")}
+                                    onClick={() => router.push("/caregiver-finder")}
                                     className="w-full h-14 text-lg font-bold rounded-2xl shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 transition-transform hover:scale-[1.02] active:scale-[0.98]"
                                 >
-                                    간병인 연결하기
+                                    간병인 찾기
                                 </Button>
                             </div>
                         </motion.div>

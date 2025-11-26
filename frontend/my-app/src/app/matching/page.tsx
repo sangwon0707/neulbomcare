@@ -7,15 +7,14 @@ import { apiGet } from '@/lib/api'
 import ErrorAlert from '@/components/ErrorAlert'
 import type { MatchingResponse, CaregiverMatch } from '@/types/api'
 
-export default function Screen7Matching() {
+export default function MatchingPage() {
   const router = useRouter()
-  const [flippedCards, setFlippedCards] = useState<{[key: string]: boolean}>({})
   const [matches, setMatches] = useState<CaregiverMatch[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
-  // 기본 간병인 데이터 (API에서 데이터가 없을 경우 사용)
+  // Default caregiver data (fallback when API returns no data)
   const defaultCaregivers: CaregiverMatch[] = [
     {
       matching_id: 1,
@@ -56,8 +55,8 @@ export default function Screen7Matching() {
   ]
 
   useEffect(() => {
-    const fetchMatchingResults = async () => {
-      // 먼저 세션 스토리지에서 매칭 결과 확인
+    const fetchMatches = async () => {
+      // Check session storage for matching results first
       const storedResults = sessionStorage.getItem('matching_results')
       if (storedResults) {
         try {
@@ -69,11 +68,11 @@ export default function Screen7Matching() {
             return
           }
         } catch (e) {
-          console.error('세션 스토리지 파싱 오류:', e)
+          console.error('Session storage parsing error:', e)
         }
       }
 
-      // API에서 직접 조회
+      // Fetch from API
       const patientId = sessionStorage.getItem('patient_id')
       if (patientId) {
         try {
@@ -85,18 +84,18 @@ export default function Screen7Matching() {
             setMatches(response.matches)
             setTotalCount(response.total_count)
           } else {
-            // API에서 데이터가 없으면 기본 데이터 사용
+            // Use default data if API returns empty
             setMatches(defaultCaregivers)
             setTotalCount(defaultCaregivers.length)
           }
         } catch (err) {
-          console.error('매칭 결과 조회 실패:', err)
-          // 에러 시 기본 데이터 사용
+          console.error('Failed to fetch matching results:', err)
+          // Use default data on error
           setMatches(defaultCaregivers)
           setTotalCount(defaultCaregivers.length)
         }
       } else {
-        // patient_id가 없으면 기본 데이터 사용
+        // No patient_id, use default data
         setMatches(defaultCaregivers)
         setTotalCount(defaultCaregivers.length)
       }
@@ -104,23 +103,27 @@ export default function Screen7Matching() {
       setLoading(false)
     }
 
-    fetchMatchingResults()
+    fetchMatches()
   }, [])
 
   const handleSelectCaregiver = (caregiver: CaregiverMatch) => {
-    // Store selected caregiver in session storage and navigate
     sessionStorage.setItem('selectedCaregiver', JSON.stringify(caregiver))
     sessionStorage.setItem('matching_id', caregiver.matching_id.toString())
-    router.push('/mypage_mycaregiver')
+    router.push('/care-plans-create-1')
   }
 
   const getAvatarEmoji = (name: string) => {
-    // 이름에 따라 다른 아바타 표시
     if (name.includes('미숙') || name.includes('은영')) return '👩‍⚕️'
     return '👨‍⚕️'
   }
 
   const styles = {
+    container: {
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      background: background
+    },
     navBar: {
       display: 'flex',
       alignItems: 'center',
@@ -214,9 +217,6 @@ export default function Screen7Matching() {
     },
     star: {
       color: secondPrimary
-    },
-    ratingCount: {
-      color: '#999'
     },
     certificationBadge: {
       display: 'inline-block',
@@ -339,101 +339,94 @@ export default function Screen7Matching() {
     }
   }
 
-  const handleCardClick = (name: string) => {
-    setFlippedCards(prev => ({
-      ...prev,
-      [name]: !prev[name]
-    }))
-  }
-
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: background }}>
+      <div style={styles.container}>
         <div style={styles.navBar}>
           <button style={styles.backBtn} onClick={() => router.push('/caregiver-finder')}>‹</button>
-          <div style={styles.navTitle}>추천 간병인</div>
+          <div style={styles.navTitle}>AI 추천 간병인</div>
           <button style={styles.filterBtn}>⚙️</button>
         </div>
         <div style={styles.loadingContainer}>
-          매칭 결과를 불러오는 중...
+          로딩 중...
         </div>
       </div>
     )
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: background }}>
+    <div style={styles.container}>
       <ErrorAlert error={error} onClose={() => setError(null)} />
 
       <div style={styles.navBar}>
         <button style={styles.backBtn} onClick={() => router.push('/caregiver-finder')}>‹</button>
-        <div style={styles.navTitle}>추천 간병인</div>
+        <div style={styles.navTitle}>AI 추천 간병인</div>
         <button style={styles.filterBtn}>⚙️</button>
       </div>
 
       <div style={styles.header}>
-        <h2 style={styles.h2}>환자분에게 적합한 간병인</h2>
-        <p style={styles.p}>{totalCount}명의 전문가를 찾았습니다</p>
+        <h2 style={styles.h2}>AI 추천 간병인 ({totalCount}명)</h2>
+        <p style={styles.p}>환자 상태에 맞는 최적의 간병인을 추천해드립니다</p>
       </div>
 
       <div style={styles.content}>
         {matches.length === 0 ? (
           <div style={styles.loadingContainer}>
-            매칭된 간병인이 없습니다.
+            매칭 결과가 없습니다.
           </div>
         ) : (
-          matches.map((caregiver, index) => (
-            <div key={caregiver.matching_id || index} style={styles.caregiverCard}>
+          matches.map((match) => (
+            <div key={match.matching_id} style={styles.caregiverCard}>
               <div style={styles.caregiverHeader}>
                 <div style={styles.caregiverAvatar}>
-                  {caregiver.profile_image_url ? (
+                  {match.profile_image_url ? (
                     <img
-                      src={caregiver.profile_image_url}
-                      alt={caregiver.caregiver_name}
+                      src={match.profile_image_url}
+                      alt={match.caregiver_name}
                       style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
                     />
                   ) : (
-                    getAvatarEmoji(caregiver.caregiver_name)
+                    getAvatarEmoji(match.caregiver_name)
                   )}
                 </div>
                 <div style={styles.caregiverInfo}>
                   <div style={styles.nameRating}>
-                    <span style={styles.caregiverName}>{caregiver.caregiver_name}</span>
+                    <span style={styles.caregiverName}>{match.caregiver_name}</span>
                   </div>
                   <div style={styles.rating}>
                     <span style={styles.star}>⭐</span>
-                    <span>{caregiver.avg_rating}</span>
+                    <span>{match.avg_rating}/5.0</span>
                   </div>
-                  <div style={{marginTop: '8px'}}>
-                    <span style={styles.certificationBadge}>{caregiver.grade}</span>
+                  <div style={{ marginTop: '8px' }}>
+                    <span style={styles.certificationBadge}>{match.grade}</span>
                   </div>
-                  <div style={styles.experience}>경력 {caregiver.experience_years}년</div>
+                  <div style={styles.experience}>경력 {match.experience_years}년</div>
                 </div>
               </div>
 
               <div style={styles.caregiverBody}>
                 <div style={styles.specialtyTags}>
-                  {caregiver.specialties.map((specialty, i) => (
+                  {match.specialties.map((specialty, i) => (
                     <span key={i} style={styles.specialtyTag}>{specialty}</span>
                   ))}
                 </div>
                 <div style={styles.matchInfo}>
                   <div style={styles.matchIcon}>✨</div>
                   <div style={styles.matchText}>
-                    <div style={styles.matchScore}>{caregiver.match_score}% 매칭</div>
+                    <div style={styles.matchScore}>{match.match_score}% 매칭</div>
                     <div style={styles.matchDetail}>▼ 매칭 근거 보기</div>
                   </div>
                 </div>
               </div>
 
               <div style={styles.caregiverFooter}>
-                <div style={styles.rate}>{caregiver.hourly_rate.toLocaleString()}원/시간</div>
+                <div style={styles.rate}>{match.hourly_rate.toLocaleString()}원/시간</div>
                 <button style={styles.actionBtn}>프로필 보기</button>
                 <button
-                  style={{...styles.actionBtn, ...styles.actionBtnPrimary}}
-                  onClick={() => handleSelectCaregiver(caregiver)}
+                  style={{ ...styles.actionBtn, ...styles.actionBtnPrimary }}
+                  onClick={() => handleSelectCaregiver(match)}
                 >
-                  선택
+                  선택하기
                 </button>
               </div>
             </div>
@@ -444,7 +437,7 @@ export default function Screen7Matching() {
       <div style={styles.bottomSection}>
         <button style={styles.showMoreBtn}>더 많은 간병인 보기</button>
         <button style={styles.skipBtn} onClick={() => router.push('/care-plans-create-1')}>
-          간병인 없이 진행하기
+          나중에 결정하기
         </button>
       </div>
     </div>

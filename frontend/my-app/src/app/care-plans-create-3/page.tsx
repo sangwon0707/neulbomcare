@@ -3,6 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { background, firstPrimary } from '../colors'
+import { apiPost } from '@/lib/api'
+import ErrorAlert from '@/components/ErrorAlert'
+import type { ReviewCreateRequest, ReviewResponse } from '@/types/api'
 
 export default function Screen10CaregiverReview() {
   const router = useRouter()
@@ -11,6 +14,58 @@ export default function Screen10CaregiverReview() {
   const [suggestion, setSuggestion] = useState('약 복용은 식사 후 30분 뒤에 하는 것이 더 좋습니다. 메트포민은 공복에 먹으면 속이 불편할 수 있습니다.')
   const [alternativeTime, setAlternativeTime] = useState('08:30')
   const [overallFeedback, setOverallFeedback] = useState('전반적으로 잘 구성되었으나, 오전에 활동이 너무 집중되어 있습니다. 환자분이 쉽게 피로해하실 수 있으니 휴식 시간을 더 확보하시는 것을 추천드립니다.')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
+
+  // 피드백을 점수로 변환
+  const feedbackToRating = (feedback: string): number => {
+    switch (feedback) {
+      case 'appropriate': return 5
+      case 'adjustment': return 4
+      case 'suggestion': return 3
+      case 'inappropriate': return 1
+      default: return 3
+    }
+  }
+
+  const handleSubmit = async () => {
+    const matchingId = sessionStorage.getItem('matching_id')
+    if (!matchingId) {
+      alert('매칭 정보를 찾을 수 없습니다.')
+      router.push('/caregiver-result-list')
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const rating = feedbackToRating(selectedFeedback)
+      const comment = `[${selectedReason}] ${suggestion}\n\n전체 의견: ${overallFeedback}`
+
+      const payload: ReviewCreateRequest = {
+        rating: rating,
+        comment: comment
+      }
+
+      const response = await apiPost<ReviewResponse>(
+        `/api/matching/${matchingId}/reviews`,
+        payload
+      )
+
+      console.log('리뷰 등록 성공:', response)
+
+      // 리뷰 ID를 세션 스토리지에 저장
+      sessionStorage.setItem('review_id', response.review_id.toString())
+
+      router.push('/care-plans-create-4')
+    } catch (err) {
+      console.error('리뷰 등록 실패:', err)
+      setError(err as Error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const styles = {
     container: {
@@ -204,20 +259,26 @@ export default function Screen10CaregiverReview() {
     btnPrimary: {
       background: firstPrimary,
       color: 'white'
+    },
+    btnDisabled: {
+      opacity: 0.5,
+      cursor: 'not-allowed'
     }
   }
 
   return (
     <div style={styles.container}>
+      <ErrorAlert error={error} onClose={() => setError(null)} />
+
       <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => router.push('/schedule')}>‹</button>
+        <button style={styles.backBtn} onClick={() => router.push('/care-plans-create-2')}>‹</button>
         <div style={styles.navTitle}>케어 플랜 검토</div>
         <div style={{width: '20px'}}></div>
       </div>
 
       <div style={styles.patientCard}>
-        <h3 style={styles.patientCardH3}>김영희 어머니 (78세)</h3>
-        <p style={styles.patientCardP}>당뇨병 • 경도 치매 • 고혈압</p>
+        <h3 style={styles.patientCardH3}>케어 플랜 리뷰</h3>
+        <p style={styles.patientCardP}>케어 플랜에 대한 의견을 남겨주세요</p>
       </div>
 
       <div style={styles.content}>
@@ -237,7 +298,7 @@ export default function Screen10CaregiverReview() {
               }}
               onClick={() => setSelectedFeedback('appropriate')}
             >
-              ✅ 적절함
+              적절함
             </button>
             <button
               style={{
@@ -246,7 +307,7 @@ export default function Screen10CaregiverReview() {
               }}
               onClick={() => setSelectedFeedback('adjustment')}
             >
-              ⚠️ 조정 필요
+              조정 필요
             </button>
             <button
               style={{
@@ -255,7 +316,7 @@ export default function Screen10CaregiverReview() {
               }}
               onClick={() => setSelectedFeedback('inappropriate')}
             >
-              ❌ 부적절함
+              부적절함
             </button>
             <button
               style={{
@@ -264,7 +325,7 @@ export default function Screen10CaregiverReview() {
               }}
               onClick={() => setSelectedFeedback('suggestion')}
             >
-              💡 제안 있음
+              제안 있음
             </button>
           </div>
 
@@ -346,10 +407,10 @@ export default function Screen10CaregiverReview() {
           </div>
 
           <div style={styles.feedbackOptions}>
-            <button style={styles.feedbackBtn}>✅ 적절함</button>
-            <button style={styles.feedbackBtn}>⚠️ 조정 필요</button>
-            <button style={styles.feedbackBtn}>❌ 부적절함</button>
-            <button style={styles.feedbackBtn}>💡 제안 있음</button>
+            <button style={styles.feedbackBtn}>적절함</button>
+            <button style={styles.feedbackBtn}>조정 필요</button>
+            <button style={styles.feedbackBtn}>부적절함</button>
+            <button style={styles.feedbackBtn}>제안 있음</button>
           </div>
         </div>
 
@@ -367,10 +428,15 @@ export default function Screen10CaregiverReview() {
       <div style={styles.bottomBar}>
         <button style={{...styles.btn, ...styles.btnSecondary}}>임시 저장</button>
         <button
-          style={{...styles.btn, ...styles.btnPrimary}}
-          onClick={() => router.push('/care-plans-create-4')}
+          style={{
+            ...styles.btn,
+            ...styles.btnPrimary,
+            ...(loading ? styles.btnDisabled : {})
+          }}
+          onClick={handleSubmit}
+          disabled={loading}
         >
-          검토 완료
+          {loading ? '저장 중...' : '검토 완료'}
         </button>
       </div>
     </div>

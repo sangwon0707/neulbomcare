@@ -3,28 +3,58 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
+import { apiPost } from '@/lib/api'
+import ErrorAlert from '@/components/ErrorAlert'
+import type { PatientCreateRequest, PatientResponse } from '@/types/api'
 
 export default function PatientCondition1Page() {
   const router = useRouter()
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<PatientCreateRequest>({
     name: '',
-    age: '',
-    gender: 'female',
+    age: 0,
+    gender: 'Female',
     relationship: ''
   })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
 
-  const handleNext = () => {
-    if (formData.name && formData.age && formData.relationship) {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!formData.name || !formData.age || !formData.relationship) {
+      alert('모든 필수 항목을 입력해주세요.')
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await apiPost<PatientResponse>(
+        '/api/patients',
+        formData
+      )
+
+      console.log('환자 정보 등록 성공:', response)
+
+      // patient_id를 세션 스토리지에 저장 (다음 페이지에서 사용)
+      sessionStorage.setItem('patient_id', response.patient_id.toString())
+
       router.push('/patient-condition-2')
-    } else {
-      alert('필수 항목을 입력해주세요.')
+    } catch (err) {
+      console.error('환자 정보 등록 실패:', err)
+      setError(err as Error)
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
     <div className="flex flex-col h-screen bg-[#f9f7f2] overflow-hidden font-['Pretendard']">
+      <ErrorAlert error={error} onClose={() => setError(null)} />
+
       {/* Navigation Bar with Progress */}
-      <div className="flex items-center px-5 py-4 border-b border-gray-100 flex-shrink-0">
+      <div className="flex items-center px-5 py-4 border-b border-gray-100 shrink-0">
         <button
           onClick={() => router.push('/guardians')}
           className="text-xl text-[#18D4C6] bg-transparent border-none cursor-pointer"
@@ -51,13 +81,14 @@ export default function PatientCondition1Page() {
         </div>
 
         {/* Form */}
-        <form className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name */}
           <div>
             <label className="block text-sm font-semibold text-black mb-2">
               이름 <span className="text-[#F2643B]">*</span>
             </label>
             <input
+              name="name"
               type="text"
               className="w-full px-4 py-4 border border-gray-200 rounded-xl text-base text-black bg-white"
               placeholder="예: 김영희"
@@ -73,11 +104,12 @@ export default function PatientCondition1Page() {
               나이 <span className="text-[#F2643B]">*</span>
             </label>
             <input
+              name="age"
               type="number"
               className="w-full px-4 py-4 border border-gray-200 rounded-xl text-base text-black bg-white"
               placeholder="예: 78"
-              value={formData.age}
-              onChange={(e) => setFormData({...formData, age: e.target.value})}
+              value={formData.age || ''}
+              onChange={(e) => setFormData({...formData, age: parseInt(e.target.value) || 0})}
               required
             />
           </div>
@@ -90,21 +122,21 @@ export default function PatientCondition1Page() {
             <div className="flex gap-2">
               <div
                 className={`flex-1 px-4 py-4 border-2 rounded-xl text-center cursor-pointer transition-all ${
-                  formData.gender === 'female'
+                  formData.gender === 'Female'
                     ? 'border-[#18D4C6] bg-blue-50'
                     : 'border-gray-200 bg-white'
                 } text-black`}
-                onClick={() => setFormData({...formData, gender: 'female'})}
+                onClick={() => setFormData({...formData, gender: 'Female'})}
               >
                 여성
               </div>
               <div
                 className={`flex-1 px-4 py-4 border-2 rounded-xl text-center cursor-pointer transition-all ${
-                  formData.gender === 'male'
+                  formData.gender === 'Male'
                     ? 'border-[#18D4C6] bg-blue-50'
                     : 'border-gray-200 bg-white'
                 } text-black`}
-                onClick={() => setFormData({...formData, gender: 'male'})}
+                onClick={() => setFormData({...formData, gender: 'Male'})}
               >
                 남성
               </div>
@@ -117,30 +149,32 @@ export default function PatientCondition1Page() {
               보호자와 관계 <span className="text-[#F2643B]">*</span>
             </label>
             <select
+              name="relationship"
               className="w-full px-4 py-4 border border-gray-200 rounded-xl text-base text-black bg-white appearance-none"
               value={formData.relationship}
               onChange={(e) => setFormData({...formData, relationship: e.target.value})}
               required
             >
               <option value="">선택해주세요</option>
-              <option value="mother">어머니</option>
-              <option value="father">아버지</option>
-              <option value="spouse">배우자</option>
-              <option value="grandparent">조부모</option>
-              <option value="other">기타</option>
+              <option value="어머니">어머니</option>
+              <option value="아버지">아버지</option>
+              <option value="배우자">배우자</option>
+              <option value="조부모">조부모</option>
+              <option value="기타">기타</option>
             </select>
           </div>
-        </form>
 
-        {/* Next Button */}
-        <div className="mt-8 pb-3">
-          <button
-            onClick={handleNext}
-            className="w-full px-5 py-[18px] bg-[#18D4C6] text-white border-none rounded-xl text-[17px] font-semibold cursor-pointer"
-          >
-            다음
-          </button>
-        </div>
+          {/* Next Button */}
+          <div className="mt-8 pb-3">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full px-5 py-[18px] bg-[#18D4C6] text-white border-none rounded-xl text-[17px] font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? '등록 중...' : '다음'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

@@ -1,14 +1,22 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { background, firstPrimary } from '../colors'
+import { apiGet } from '@/lib/api'
+import ErrorAlert from '@/components/ErrorAlert'
+import type { CarePlansResponse, Schedule, MealPlan } from '@/types/api'
 
 export default function Screen9Schedule() {
   const router = useRouter()
-  const [activeTab, setActiveTab] = useState('weekly')
+  const [activeTab, setActiveTab] = useState<'weekly' | 'monthly'>('weekly')
+  const [schedules, setSchedules] = useState<Schedule[]>([])
+  const [mealPlans, setMealPlans] = useState<MealPlan[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
 
-  const activities = [
+  // 기본 활동 데이터 (API에서 데이터가 없을 경우 사용)
+  const defaultActivities = [
     { time: '07:00', title: '기상 도움', assignee: '👨‍⚕️ 간병인 김미숙' },
     { time: '07:30', title: '아침 식사 준비', assignee: '👩 딸 박지은' },
     { time: '08:00', title: '약 복용 확인', assignee: '👨‍⚕️ 간병인 김미숙', note: '⚠️ 아스피린 100mg, 메트포민 500mg' },
@@ -16,6 +24,52 @@ export default function Screen9Schedule() {
     { time: '10:00', title: '산책 (날씨 좋을 시)', assignee: '👩 딸 박지은' },
     { time: '12:00', title: '점심 식사 준비', assignee: '👨‍⚕️ 간병인 김미숙' }
   ]
+
+  useEffect(() => {
+    fetchCarePlans()
+  }, [activeTab])
+
+  const fetchCarePlans = async () => {
+    const patientId = sessionStorage.getItem('patient_id')
+    if (!patientId) {
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await apiGet<CarePlansResponse>(
+        `/api/patients/${patientId}/care-plans?type=${activeTab}`
+      )
+
+      if (response.schedules && response.schedules.length > 0) {
+        setSchedules(response.schedules)
+      }
+      if (response.meal_plans && response.meal_plans.length > 0) {
+        setMealPlans(response.meal_plans)
+      }
+    } catch (err) {
+      console.error('케어 플랜 조회 실패:', err)
+      // 에러 시에도 기본 데이터 표시
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // 스케줄을 활동 형식으로 변환
+  const getActivities = () => {
+    if (schedules.length > 0) {
+      return schedules.map(schedule => ({
+        time: schedule.start_time.slice(0, 5), // HH:MM 형식
+        title: schedule.title,
+        assignee: `👨‍⚕️ ${schedule.category}`,
+        note: schedule.is_completed ? '✅ 완료' : undefined
+      }))
+    }
+    return defaultActivities
+  }
 
   const styles = {
     container: {
@@ -191,19 +245,31 @@ export default function Screen9Schedule() {
     btnAction: {
       background: firstPrimary,
       color: 'white'
+    },
+    loadingContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '40px',
+      fontSize: '14px',
+      color: '#666'
     }
   }
 
+  const activities = getActivities()
+
   return (
     <div style={styles.container}>
+      <ErrorAlert error={error} onClose={() => setError(null)} />
+
       <div style={styles.header}>
         <div style={styles.headerBox}>
-          <h1 style={styles.h1}>김영희님의 케어 플랜</h1>
-          <p style={styles.p}>AI가 생성한 7일 간병 일정입니다</p>
+          <h1 style={styles.h1}>케어 플랜</h1>
+          <p style={styles.p}>AI가 생성한 {activeTab === 'weekly' ? '7일' : '30일'} 간병 일정입니다</p>
 
           <div style={styles.summaryCard}>
             <div style={styles.summaryItem}>
-              <div style={styles.summaryNumber}>42개</div>
+              <div style={styles.summaryNumber}>{schedules.length > 0 ? schedules.length : 42}개</div>
               <div style={styles.summaryLabel}>총 활동</div>
             </div>
             <div style={styles.summaryItem}>
@@ -234,26 +300,50 @@ export default function Screen9Schedule() {
           </button>
         </div>
 
-        <div style={styles.daySchedule}>
-          <div style={styles.dayHeader}>월요일 일정</div>
+        {loading ? (
+          <div style={styles.loadingContainer}>
+            케어 플랜을 불러오는 중...
+          </div>
+        ) : (
+          <div style={styles.daySchedule}>
+            <div style={styles.dayHeader}>{activeTab === 'weekly' ? '월요일' : '이번 달'} 일정</div>
 
-          {activities.map((activity, index) => (
-            <div key={index} style={styles.activity}>
-              <div style={styles.activityTime}>{activity.time}</div>
-              <div style={styles.activityContent}>
-                <div style={styles.activityTitle}>{activity.title}</div>
-                <div style={styles.activityAssignee}>{activity.assignee}</div>
-                {activity.note && (
-                  <div style={styles.activityNote}>{activity.note}</div>
-                )}
+            {activities.map((activity, index) => (
+              <div key={index} style={styles.activity}>
+                <div style={styles.activityTime}>{activity.time}</div>
+                <div style={styles.activityContent}>
+                  <div style={styles.activityTitle}>{activity.title}</div>
+                  <div style={styles.activityAssignee}>{activity.assignee}</div>
+                  {activity.note && (
+                    <div style={styles.activityNote}>{activity.note}</div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
+
+        {/* 식단 계획 표시 */}
+        {mealPlans.length > 0 && (
+          <div style={styles.daySchedule}>
+            <div style={styles.dayHeader}>식단 계획</div>
+            {mealPlans.map((meal, index) => (
+              <div key={index} style={styles.activity}>
+                <div style={styles.activityTime}>{meal.meal_type}</div>
+                <div style={styles.activityContent}>
+                  <div style={styles.activityTitle}>{meal.menu_name}</div>
+                  <div style={styles.activityAssignee}>
+                    칼로리: {meal.nutrition_info.calories}kcal
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
         <div style={styles.reviewCard}>
-          <h3 style={styles.reviewCardH3}>💼 전문가 의견을 들어보세요</h3>
-          <p style={styles.reviewCardP}>간병인 김미숙님께 이 일정에 대한 검토를 요청하시겠어요?</p>
+          <h3 style={styles.reviewCardH3}>전문가 의견을 들어보세요</h3>
+          <p style={styles.reviewCardP}>간병인님께 이 일정에 대한 검토를 요청하시겠어요?</p>
           <p style={{...styles.reviewCardP, fontSize: '13px', opacity: 0.9}}>
             전문가의 현장 경험이 더해지면 더 실용적인 케어 플랜이 됩니다.
           </p>
@@ -261,7 +351,7 @@ export default function Screen9Schedule() {
             <button style={{...styles.btn, ...styles.btnOutline}}>나중에</button>
             <button
               style={{...styles.btn, ...styles.btnPrimary}}
-              onClick={() => router.push('/caregiver-review')}
+              onClick={() => router.push('/care-plans-create-3')}
             >
               리뷰 요청하기
             </button>
@@ -273,7 +363,7 @@ export default function Screen9Schedule() {
         <button style={{...styles.btn, ...styles.btnSecondary}}>일정 수정</button>
         <button
           style={{...styles.btn, ...styles.btnAction}}
-          onClick={() => router.push('/dashboard')}
+          onClick={() => router.push('/mypage-dashboard')}
         >
           이대로 시작
         </button>
