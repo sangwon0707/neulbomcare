@@ -23,8 +23,12 @@ export default function PersonalityTestPage() {
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const initialized = useRef(false)
 
+    const chatContainerRef = useRef<HTMLDivElement>(null)
+
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
+        }
     }
 
     useEffect(() => {
@@ -95,7 +99,7 @@ export default function PersonalityTestPage() {
     return (
         <div className="flex flex-col h-[100dvh] bg-gradient-to-br from-purple-50/30 via-pink-50/20 to-blue-50/30 max-w-[430px] mx-auto overflow-hidden">
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto px-6 pb-4 flex flex-col justify-start min-h-0">
+            <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-6 pb-4 flex flex-col justify-start min-h-0">
                 <div className="h-24 flex-shrink-0" /> {/* Top Spacer */}
                 <div className="space-y-2">
                     <AnimatePresence>
@@ -124,7 +128,7 @@ export default function PersonalityTestPage() {
 
             {/* Input Area */}
             {step !== 4 && (
-                <div className="bg-white/95 backdrop-blur-md p-4 flex-shrink-0 border-t border-gray-100">
+                <div className="bg-white/95 backdrop-blur-md pt-4 px-4 pb-0 flex-shrink-0 border-t border-gray-100">
 
                     {/* Options for Step 1 */}
                     {step === 1 && !isTyping && (
@@ -174,7 +178,7 @@ export default function PersonalityTestPage() {
                         </div>
                     )}
 
-                    <form onSubmit={handleInputSubmit} className="flex gap-2">
+                    <form onSubmit={handleInputSubmit} className="flex gap-2 pb-4">
                         <Input
                             value={inputText}
                             onChange={(e) => setInputText(e.target.value)}

@@ -10,7 +10,7 @@ export default function Screen8Loading() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      router.push('/care-plans-create-2')
+      router.push('/caregiver-result-2')
     }, 3000)
 
     return () => clearTimeout(timer)
@@ -169,16 +169,10 @@ export default function Screen8Loading() {
 
             <div style={styles.stepMessages}>
               <div style={{...styles.stepMessage, animationDelay: '0s'}}>
-                환자 정보를 분석하고 있어요...
+                후보가 너무 많아요...
               </div>
-              <div style={{...styles.stepMessage, animationDelay: '2s'}}>
-                필요한 간병 활동을 찾고 있어요...
-              </div>
-              <div style={{...styles.stepMessage, animationDelay: '4s'}}>
-                가족과 간병인 일정을 조율하고 있어요...
-              </div>
-              <div style={{...styles.stepMessage, animationDelay: '6s'}}>
-                맞춤 케어 플랜을 생성 중...
+              <div style={{...styles.stepMessage, animationDelay: '1s'}}>
+                최고의 파트너를 찾았어요...
               </div>
             </div>
           </div>

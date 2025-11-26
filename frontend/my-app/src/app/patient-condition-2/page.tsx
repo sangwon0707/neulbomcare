@@ -2,9 +2,9 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { background, firstPrimary, secondPrimary } from '../colors'
+import { ChevronLeft } from 'lucide-react'
 
-export default function Screen3HealthStatus() {
+export default function PatientCondition2Page() {
   const router = useRouter()
   const navigate = (path: string) => router.push(path)
   const [selectedDiseases, setSelectedDiseases] = useState<string[]>(['dementia', 'diabetes', 'hypertension'])
@@ -35,209 +35,59 @@ export default function Screen3HealthStatus() {
     )
   }
 
-  const styles = {
-    container: {
-      width: '100%',
-      minHeight: '100vh',
-      background: background,
-      display: 'flex',
-      flexDirection: 'column' as const
-    },
-    navBar: {
-      display: 'flex',
-      alignItems: 'center',
-      padding: '15px 20px',
-      borderBottom: '1px solid #f0f0f0'
-    },
-    backBtn: {
-      fontSize: '20px',
-      cursor: 'pointer',
-      color: firstPrimary,
-      background: 'none',
-      border: 'none'
-    },
-    progress: {
-      flex: 1,
-      margin: '0 20px'
-    },
-    progressBar: {
-      width: '100%',
-      height: '4px',
-      background: '#f0f0f0',
-      borderRadius: '2px',
-      overflow: 'hidden'
-    },
-    progressFill: {
-      height: '100%',
-      background: firstPrimary,
-      width: '40%',
-      borderRadius: '2px'
-    },
-    content: {
-      flex: 1,
-      overflowY: 'auto' as const,
-      padding: '30px 20px'
-    },
-    headerText: {
-      marginBottom: '30px'
-    },
-    h2: {
-      fontSize: '26px',
-      color: '#333',
-      marginBottom: '8px'
-    },
-    p: {
-      fontSize: '14px',
-      color: '#666'
-    },
-    section: {
-      marginBottom: '35px'
-    },
-    sectionTitle: {
-      fontSize: '16px',
-      fontWeight: 600,
-      color: '#333',
-      marginBottom: '12px'
-    },
-    sectionSubtitle: {
-      fontSize: '13px',
-      color: '#666',
-      marginBottom: '15px'
-    },
-    diseaseGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(2, 1fr)',
-      gap: '10px'
-    },
-    diseaseCard: {
-      padding: '15px',
-      border: '2px solid #e0e0e0',
-      borderRadius: '12px',
-      textAlign: 'center' as const,
-      cursor: 'pointer',
-      transition: 'all 0.2s'
-    },
-    diseaseCardSelected: {
-      borderColor: firstPrimary,
-      background: '#f0f4ff'
-    },
-    diseaseIcon: {
-      fontSize: '32px',
-      marginBottom: '8px'
-    },
-    diseaseName: {
-      fontSize: '14px',
-      color: '#333',
-      fontWeight: 500
-    },
-    otherInput: {
-      marginTop: '10px'
-    },
-    input: {
-      width: '100%',
-      padding: '12px',
-      border: '1px solid #e0e0e0',
-      borderRadius: '8px',
-      fontSize: '14px',
-      boxSizing: 'border-box' as const
-    },
-    mobilityOptions: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      gap: '12px'
-    },
-    mobilityOption: {
-      padding: '15px',
-      border: '2px solid #e0e0e0',
-      borderRadius: '12px',
-      cursor: 'pointer',
-      transition: 'all 0.2s',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '12px'
-    },
-    mobilityOptionSelected: {
-      borderColor: firstPrimary,
-      background: '#f0f4ff'
-    },
-    mobilityIcon: {
-      fontSize: '24px',
-      minWidth: '30px'
-    },
-    mobilityText: {
-      flex: 1
-    },
-    mobilityLabel: {
-      fontSize: '15px',
-      fontWeight: 600,
-      color: '#333',
-      marginBottom: '3px'
-    },
-    mobilityDesc: {
-      fontSize: '12px',
-      color: '#666'
-    },
-    bottomBar: {
-      padding: '20px',
-      background: background,
-      borderTop: '1px solid #f0f0f0'
-    },
-    nextButton: {
-      width: '100%',
-      padding: '18px',
-      background: firstPrimary,
-      color: 'white',
-      border: 'none',
-      borderRadius: '12px',
-      fontSize: '17px',
-      fontWeight: 600,
-      cursor: 'pointer'
-    }
-  }
-
   return (
-    <div style={styles.container}>
-      <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => navigate('/patient-info')}>‹</button>
-        <div style={styles.progress}>
-          <div style={styles.progressBar}>
-            <div style={styles.progressFill}></div>
+    <div className="flex flex-col h-screen bg-[#f9f7f2] overflow-hidden font-['Pretendard']">
+      <div className="flex items-center px-5 py-4 border-b border-gray-100 flex-shrink-0">
+        <button
+          onClick={() => navigate('/patient-condition-1')}
+          className="text-[#18D4C6] bg-transparent border-none cursor-pointer"
+        >
+          <ChevronLeft className="w-6 h-6" />
+        </button>
+        <div className="flex-1 mx-5">
+          <div className="w-full h-1 bg-transparent rounded-sm flex gap-1">
+            <div className="flex-1 h-full bg-[#18D4C6] rounded-sm"></div>
+            <div className="flex-1 h-full bg-[#18D4C6] rounded-sm"></div>
+            <div className="flex-1 h-full bg-[#18D4C6] rounded-sm"></div>
+            <div className="flex-1 h-full bg-gray-200 rounded-sm"></div>
+            <div className="flex-1 h-full bg-gray-200 rounded-sm"></div>
           </div>
         </div>
-        <div style={{width: '60px'}}></div>
+        <div className="text-sm text-black cursor-pointer">건너뛰기</div>
       </div>
 
-      <div style={styles.content}>
-        <div style={styles.headerText}>
-          <h2 style={styles.h2}>건강 상태를 알려주세요</h2>
-          <p style={styles.p}>더 정확한 간병 계획을 위해 필요합니다</p>
+      <div className="flex-1 overflow-y-auto px-5 py-8">
+        <div className="mb-8">
+          <h2 className="text-[26px] text-gray-800 mb-2">건강 상태를 알려주세요</h2>
+          <p className="text-[14px] text-gray-600">더 정확한 간병 계획을 위해 필요합니다</p>
         </div>
 
-        <div style={styles.section}>
-          <div style={styles.sectionTitle}>주요 질병을 선택해주세요</div>
-          <div style={styles.sectionSubtitle}>중복 선택 가능</div>
+        <div className="mb-9">
+          <div className="text-[16px] font-semibold text-gray-800 mb-3">주요 질병을 선택해주세요</div>
+          <div className="text-[13px] text-gray-600 mb-4">중복 선택 가능</div>
 
-          <div style={styles.diseaseGrid}>
+          <div className="grid grid-cols-2 gap-2">
             {diseases.map(disease => (
               <div
                 key={disease.id}
-                style={{
-                  ...styles.diseaseCard,
-                  ...(selectedDiseases.includes(disease.id) ? styles.diseaseCardSelected : {})
-                }}
+                className={`p-4 border-2 rounded-xl text-center cursor-pointer transition-all ${
+                  selectedDiseases.includes(disease.id)
+                    ? 'border-[#18D4C6] bg-blue-50'
+                    : 'border-gray-200'
+                }`}
                 onClick={() => toggleDisease(disease.id)}
               >
-                <div style={styles.diseaseIcon}>{disease.icon}</div>
-                <div style={styles.diseaseName}>{disease.name}</div>
+                <div className="text-4xl mb-2">{disease.icon}</div>
+                <div className="text-[14px] font-medium text-gray-800">{disease.name}</div>
               </div>
             ))}
           </div>
 
           {selectedDiseases.includes('other') && (
-            <div style={styles.otherInput}>
+            <div className="mt-3">
               <input
                 type="text"
-                style={styles.input}
+                className="w-full px-3 py-3 border border-gray-200 rounded-lg text-sm text-black bg-white"
                 placeholder="기타 질병명을 입력하세요"
                 value={otherDisease}
                 onChange={(e) => setOtherDisease(e.target.value)}
@@ -246,32 +96,38 @@ export default function Screen3HealthStatus() {
           )}
         </div>
 
-        <div style={styles.section}>
-          <div style={styles.sectionTitle}>스스로 움직이실 수 있나요?</div>
+        <div className="mb-8">
+          <div className="text-[16px] font-semibold text-gray-800 mb-4">스스로 움직이실 수 있나요?</div>
 
-          <div style={styles.mobilityOptions}>
+          <div className="space-y-3">
             {mobilityOptions.map(option => (
               <div
                 key={option.id}
-                style={{
-                  ...styles.mobilityOption,
-                  ...(selectedMobility === option.id ? styles.mobilityOptionSelected : {})
-                }}
+                className={`p-4 border-2 rounded-xl cursor-pointer transition-all flex items-start gap-3 ${
+                  selectedMobility === option.id
+                    ? 'border-[#18D4C6] bg-blue-50'
+                    : 'border-gray-200'
+                }`}
                 onClick={() => setSelectedMobility(option.id)}
               >
-                <div style={styles.mobilityIcon}>{option.icon}</div>
-                <div style={styles.mobilityText}>
-                  <div style={styles.mobilityLabel}>{option.label}</div>
-                  <div style={styles.mobilityDesc}>{option.desc}</div>
+                <div className="text-2xl flex-shrink-0 mt-1">{option.icon}</div>
+                <div className="flex-1">
+                  <div className="text-[15px] font-semibold text-gray-800 mb-1">{option.label}</div>
+                  <div className="text-[12px] text-gray-600">{option.desc}</div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </div>
 
-      <div style={styles.bottomBar}>
-        <button style={styles.nextButton} onClick={() => navigate('/medication')}>다음</button>
+        <div className="mt-8 pb-3">
+          <button
+            onClick={() => navigate('/patient-condition-3')}
+            className="w-full px-5 py-[18px] bg-[#18D4C6] text-white border-none rounded-xl text-[17px] font-semibold cursor-pointer"
+          >
+            다음
+          </button>
+        </div>
       </div>
     </div>
   )

@@ -1,18 +1,30 @@
-'use client'
+"use client"
 
 import { useRouter } from 'next/navigation'
-import { background, firstPrimary, secondPrimary } from '@/app/colors'
+import { background, firstPrimary, secondPrimary } from '../colors'
 
-export default function MypageDashboardPage() {
+export default function Screen13Dashboard() {
   const router = useRouter()
+
+  const handleCaregiverCardClick = () => {
+    router.push('/mypage_mycaregiver')
+  }
 
   const styles = {
     container: {
-      minHeight: 'calc(100vh - 64px - 80px)',
+      minHeight: '100vh',
       background: background,
       display: 'flex',
-      flexDirection: 'column' as const,
-      paddingBottom: '100px'
+      flexDirection: 'column' as const
+    },
+    statusBar: {
+      height: '44px',
+      background: 'white',
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '0 20px',
+      fontSize: '12px'
     },
     header: {
       background: background,
@@ -21,8 +33,8 @@ export default function MypageDashboardPage() {
     },
     date: {
       fontSize: '14px',
-      color: '#666',
-      marginBottom: '10px'
+      color: 'black',
+      marginBottom: '5px'
     },
     patientInfo: {
       display: 'flex',
@@ -34,21 +46,17 @@ export default function MypageDashboardPage() {
       width: '50px',
       height: '50px',
       borderRadius: '25px',
-      background: '#f0f4ff',
+      background: background,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: '24px',
-      flexShrink: 0
+      color: 'white',
+      fontSize: '20px'
     },
-    patientDetails: {
-      flex: 1
-    },
-    patientName: {
+    patientDetails: {},
+    patientDetailsH2: {
       fontSize: '18px',
-      fontWeight: 700,
-      color: '#333',
-      marginBottom: '4px'
+      marginBottom: '3px'
     },
     statusBadge: {
       display: 'inline-block',
@@ -60,7 +68,7 @@ export default function MypageDashboardPage() {
       fontWeight: 600
     },
     caregiverSection: {
-      padding: '15px'
+      marginBottom: '15px'
     },
     sectionTitle: {
       fontSize: '14px',
@@ -79,12 +87,7 @@ export default function MypageDashboardPage() {
       cursor: 'pointer',
       transition: 'all 0.3s',
       boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
-      marginBottom: '15px',
       border: '1px solid #e0e0e0'
-    },
-    caregiverCardHover: {
-      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-      transform: 'translateY(-2px)'
     },
     caregiverAvatar: {
       width: '60px',
@@ -129,188 +132,235 @@ export default function MypageDashboardPage() {
     },
     progressCard: {
       background: 'white',
-      borderRadius: '12px',
-      padding: '15px',
+      borderRadius: '15px',
+      padding: '20px',
       marginBottom: '15px',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+      boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
     },
-    progressCardTitle: {
+    progressCardH3: {
       fontSize: '16px',
-      fontWeight: 600,
-      color: '#333',
-      marginBottom: '12px'
+      marginBottom: '15px',
+      color: 'black'
     },
     progressBar: {
       width: '100%',
-      height: '8px',
+      height: '10px',
       background: '#e5e7eb',
-      borderRadius: '4px',
+      borderRadius: '5px',
       overflow: 'hidden',
-      marginBottom: '10px'
+      marginBottom: '12px'
     },
     progressFill: {
       height: '100%',
       background: `linear-gradient(90deg, ${firstPrimary} 0%, ${secondPrimary} 100%)`,
       width: '65%',
-      borderRadius: '4px'
+      borderRadius: '5px'
     },
     progressStats: {
       display: 'flex',
       justifyContent: 'space-between',
-      fontSize: '12px',
-      color: '#666'
+      fontSize: '13px',
+      color: 'black',
+      marginBottom: '15px'
     },
     nextActivity: {
-      background: '#f9fafb',
-      padding: '10px 12px',
+      background: '#f3f4f6',
+      padding: '12px',
       borderRadius: '8px',
       display: 'flex',
       alignItems: 'center',
-      gap: '10px',
-      marginTop: '10px'
+      gap: '10px'
     },
-    activityIcon: {
-      fontSize: '20px'
+    nextActivityIcon: {
+      fontSize: '24px'
     },
-    activityInfo: {
+    nextActivityInfo: {
       flex: 1
     },
-    activityTime: {
+    nextActivityTime: {
       fontSize: '12px',
-      color: '#999'
+      color: 'black'
     },
-    activityTitle: {
-      fontSize: '13px',
+    nextActivityTitle: {
       fontWeight: 600,
-      color: '#333'
+      color: 'black',
+      marginTop: '2px'
     },
     warningCard: {
       background: '#fce7f3',
       borderLeft: `4px solid ${secondPrimary}`,
-      borderRadius: '8px',
-      padding: '12px',
+      borderRadius: '12px',
+      padding: '15px',
       marginBottom: '15px'
     },
-    warningTitle: {
-      fontSize: '13px',
-      fontWeight: 600,
+    warningCardH4: {
+      fontSize: '14px',
+      marginBottom: '8px',
       color: secondPrimary,
-      marginBottom: '6px',
       display: 'flex',
       alignItems: 'center',
-      gap: '4px'
+      gap: '5px'
     },
     warningContent: {
-      fontSize: '12px',
-      color: '#333',
+      fontSize: '13px',
+      color: 'black',
       lineHeight: 1.5,
-      marginBottom: '8px'
+      marginBottom: '10px'
     },
-    actionButtons: {
+    warningButtons: {
       display: 'flex',
-      gap: '6px'
+      gap: '8px'
     },
-    actionBtn: {
-      padding: '6px 10px',
+    warningBtn: {
+      padding: '8px 12px',
       borderRadius: '6px',
       border: 'none',
-      fontSize: '11px',
+      fontSize: '12px',
       cursor: 'pointer',
       fontWeight: 600
     },
-    btnWarning: {
+    btnDetail: {
       background: secondPrimary,
       color: 'white'
     },
-    btnOutline: {
+    btnContact: {
       background: 'white',
       color: secondPrimary,
       border: `1px solid ${secondPrimary}`
     },
     feedCard: {
       background: 'white',
-      borderRadius: '12px',
-      padding: '15px',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+      borderRadius: '15px',
+      padding: '20px',
+      marginBottom: '15px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
     },
-    feedTitle: {
-      fontSize: '14px',
-      fontWeight: 600,
-      color: '#333',
-      marginBottom: '12px'
+    feedCardH3: {
+      fontSize: '16px',
+      marginBottom: '15px',
+      color: 'black'
     },
     feedItem: {
-      padding: '10px 12px',
+      padding: '12px',
       background: '#f9fafb',
       borderRadius: '8px',
-      marginBottom: '8px',
+      marginBottom: '10px',
       borderLeft: `3px solid ${secondPrimary}`
     },
     feedTime: {
-      fontSize: '11px',
-      color: '#999',
-      marginBottom: '3px'
+      fontSize: '12px',
+      color: 'black',
+      marginBottom: '5px'
     },
     feedContent: {
-      fontSize: '13px',
-      color: '#333',
+      fontSize: '14px',
+      color: 'black',
       lineHeight: 1.5
+    },
+    feedMeta: {
+      fontSize: '13px',
+      color: 'black',
+      marginTop: '5px'
+    },
+    quickActions: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gap: '10px',
+      marginBottom: '20px'
+    },
+    actionBtn: {
+      background: 'white',
+      padding: '15px',
+      borderRadius: '12px',
+      border: 'none',
+      cursor: 'pointer',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      alignItems: 'center',
+      gap: '8px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+    },
+    actionIcon: {
+      fontSize: '28px'
+    },
+    actionLabel: {
+      fontSize: '13px',
+      fontWeight: 600,
+      color: 'black'
+    },
+    bottomNav: {
+      display: 'flex',
+      background: background,
+      borderTop: '1px solid #f0f0f0',
+      padding: '10px 0'
+    },
+    navItem: {
+      flex: 1,
+      textAlign: 'center' as const,
+      padding: '5px',
+      cursor: 'pointer',
+      border: 'none',
+      background: 'none',
+      color: '#999'
+    },
+    navItemActive: {
+      color: firstPrimary
+    },
+    navIcon: {
+      fontSize: '24px',
+      marginBottom: '3px'
+    },
+    navLabel: {
+      fontSize: '11px'
     }
-  }
-
-  const handleCaregiverCardClick = () => {
-    router.push('/mypage_mycaregiver')
   }
 
   return (
     <div style={styles.container}>
-      {/* Header with Patient Info */}
       <div style={styles.header}>
-        <div style={styles.date}>2025년 11월 24일 일요일</div>
+        <div style={styles.date}>2025년 11월 12일 화요일</div>
         <div style={styles.patientInfo}>
           <div style={styles.patientAvatar}>👵</div>
           <div style={styles.patientDetails}>
-            <h2 style={styles.patientName}>김영희 어머니</h2>
+            <h2 style={styles.patientDetailsH2}>김영희 어머니</h2>
             <span style={styles.statusBadge}>양호 😊</span>
           </div>
         </div>
       </div>
 
-      {/* Caregiver Section */}
-      <div style={styles.caregiverSection}>
-        <div style={styles.sectionTitle}>나의 간병인</div>
-        <div
-          style={styles.caregiverCard}
-          onClick={handleCaregiverCardClick}
-          onMouseEnter={(e) => {
-            const el = e.currentTarget as HTMLElement
-            el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'
-            el.style.transform = 'translateY(-2px)'
-          }}
-          onMouseLeave={(e) => {
-            const el = e.currentTarget as HTMLElement
-            el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)'
-            el.style.transform = 'translateY(0)'
-          }}
-        >
-          <div style={styles.caregiverAvatar}>👩‍⚕️</div>
-          <div style={styles.caregiverInfo}>
-            <div style={styles.caregiverName}>김미숙</div>
-            <div style={styles.caregiverMeta}>
-              <span style={styles.rating}>⭐ 4.9</span>
-              <span>(127건)</span>
-            </div>
-            <div style={styles.caregiverExp}>경력 8년</div>
-          </div>
-          <div style={{fontSize: '18px', display: 'flex', alignItems: 'center'}}>›</div>
-        </div>
-      </div>
-
-      {/* Content */}
       <div style={styles.content}>
-        {/* Progress Card */}
+        {/* Caregiver Section */}
+        <div style={styles.caregiverSection}>
+          <div style={styles.sectionTitle}>나의 간병인</div>
+          <div
+            style={styles.caregiverCard}
+            onClick={handleCaregiverCardClick}
+            onMouseEnter={(e) => {
+              const el = e.currentTarget as HTMLElement
+              el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'
+              el.style.transform = 'translateY(-2px)'
+            }}
+            onMouseLeave={(e) => {
+              const el = e.currentTarget as HTMLElement
+              el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.05)'
+              el.style.transform = 'translateY(0)'
+            }}
+          >
+            <div style={styles.caregiverAvatar}>👩‍⚕️</div>
+            <div style={styles.caregiverInfo}>
+              <div style={styles.caregiverName}>김미숙</div>
+              <div style={styles.caregiverMeta}>
+                <span style={styles.rating}>⭐ 4.9</span>
+                <span>(127건)</span>
+              </div>
+              <div style={styles.caregiverExp}>경력 8년</div>
+            </div>
+            <div style={{fontSize: '18px', display: 'flex', alignItems: 'center'}}>›</div>
+          </div>
+        </div>
+
         <div style={styles.progressCard}>
-          <h3 style={styles.progressCardTitle}>📊 오늘의 진행 상황</h3>
+          <h3 style={styles.progressCardH3}>📊 오늘의 진행 상황</h3>
           <div style={styles.progressBar}>
             <div style={styles.progressFill}></div>
           </div>
@@ -320,53 +370,90 @@ export default function MypageDashboardPage() {
             <span>예정: 5개</span>
           </div>
           <div style={styles.nextActivity}>
-            <div style={styles.activityIcon}>🎯</div>
-            <div style={styles.activityInfo}>
-              <div style={styles.activityTime}>다음 활동</div>
-              <div style={styles.activityTitle}>15:00 말벗/여가활동 - 아들 이준호</div>
+            <div style={styles.nextActivityIcon}>🎯</div>
+            <div style={styles.nextActivityInfo}>
+              <div style={styles.nextActivityTime}>다음 활동</div>
+              <div style={styles.nextActivityTitle}>15:00 말벗/여가활동 - 아들 이준호</div>
             </div>
           </div>
         </div>
 
-        {/* Warning Card */}
         <div style={styles.warningCard}>
-          <div style={styles.warningTitle}>⚠️ 확인 필요</div>
+          <h4 style={styles.warningCardH4}>⚠️ 확인 필요</h4>
           <div style={styles.warningContent}>
             혈압이 평소보다 약간 높습니다<br />
             (정상: 120/80, 현재: 135/82)
           </div>
-          <div style={styles.actionButtons}>
-            <button style={{...styles.actionBtn, ...styles.btnWarning}} onClick={() => router.push('/mypage-care-report')}>
-              상세 보기
-            </button>
-            <button style={{...styles.actionBtn, ...styles.btnOutline}} onClick={() => router.push('/mypage')}>
-              간병인에게 문의
-            </button>
+          <div style={styles.warningButtons}>
+            <button style={{...styles.warningBtn, ...styles.btnDetail}}>상세 보기</button>
+            <button style={{...styles.warningBtn, ...styles.btnContact}}>간병인에게 문의</button>
           </div>
         </div>
 
-        {/* Feed Card */}
         <div style={styles.feedCard}>
-          <h4 style={styles.feedTitle}>📝 케어 리포트</h4>
+          <h3 style={styles.feedCardH3}>🔔 실시간 업데이트</h3>
+
           <div style={styles.feedItem}>
-            <div style={styles.feedTime}>오늘 14:30</div>
+            <div style={styles.feedTime}>14:32 ✅ 낮잠/휴식 완료</div>
             <div style={styles.feedContent}>
-              오후 약 복용을 완료했습니다. 혈압 측정 결과 135/82로 정상보다 약간 높은 상태입니다.
+              간병인: "1시간 30분 푹 주무셨어요"
             </div>
           </div>
+
           <div style={styles.feedItem}>
-            <div style={styles.feedTime}>오늘 12:00</div>
+            <div style={styles.feedTime}>12:15 ✅ 점심 식사 완료</div>
             <div style={styles.feedContent}>
-              점심은 흰죽 1 공기, 계란말이, 시금치 나물을 섭취했습니다. 식욕이 양호합니다.
+              간병인: "식사량 80% 완료"
             </div>
+            <div style={styles.feedMeta}>📸 사진 1장</div>
           </div>
+
           <div style={styles.feedItem}>
-            <div style={styles.feedTime}>어제 18:30</div>
+            <div style={styles.feedTime}>08:05 ✅ 약 복용 완료</div>
             <div style={styles.feedContent}>
-              아들과 30분간 영상통화했습니다. 기분이 좋아 보였습니다.
+              간병인: "모든 약 복용 확인"
             </div>
+            <div style={styles.feedMeta}>⚠️ 혈압: 135/82 (약간 높음)</div>
           </div>
         </div>
+
+        <div style={styles.quickActions}>
+          <button style={styles.actionBtn} onClick={() => router.push('/checklist')}>
+            <div style={styles.actionIcon}>📋</div>
+            <div style={styles.actionLabel}>전체 일정</div>
+          </button>
+          <button style={styles.actionBtn} onClick={() => router.push('/mypage-2')}>
+            <div style={styles.actionIcon}>💬</div>
+            <div style={styles.actionLabel}>간병인과 대화</div>
+          </button>
+          <button style={styles.actionBtn} onClick={() => router.push('/mypage-4')}>
+            <div style={styles.actionIcon}>📊</div>
+            <div style={styles.actionLabel}>주간 리포트</div>
+          </button>
+          <button style={styles.actionBtn}>
+            <div style={styles.actionIcon}>⚙️</div>
+            <div style={styles.actionLabel}>일정 조정</div>
+          </button>
+        </div>
+      </div>
+
+      <div style={styles.bottomNav}>
+        <button style={{...styles.navItem, ...styles.navItemActive}}>
+          <div style={styles.navIcon}>🏠</div>
+          <div style={styles.navLabel}>홈</div>
+        </button>
+        <button style={styles.navItem} onClick={() => router.push('/mypage-4')}>
+          <div style={styles.navIcon}>📅</div>
+          <div style={styles.navLabel}>일정</div>
+        </button>
+        <button style={styles.navItem} onClick={() => router.push('/mypage-2')}>
+          <div style={styles.navIcon}>💬</div>
+          <div style={styles.navLabel}>메시지</div>
+        </button>
+        <button style={styles.navItem}>
+          <div style={styles.navIcon}>👤</div>
+          <div style={styles.navLabel}>프로필</div>
+        </button>
       </div>
     </div>
   )

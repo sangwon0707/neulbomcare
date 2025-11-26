@@ -215,7 +215,7 @@ export default function Screen11AIValidation() {
   return (
     <div style={styles.container}>
       <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => router.push('/caregiver-review')}>‹</button>
+        <button style={styles.backBtn} onClick={() => router.push('/care-plans-create-3')}>‹</button>
         <div style={styles.navTitle}>검증 결과</div>
         <div style={{width: '20px'}}></div>
       </div>
@@ -343,8 +343,8 @@ export default function Screen11AIValidation() {
       </div>
 
       <div style={styles.bottomBar}>
-        <button style={{...styles.btn, ...styles.btnOutline}}>간병인과 대화</button>
-        <button style={{...styles.btn, ...styles.btnPrimary}}>선택 항목 적용</button>
+        <button style={{...styles.btn, ...styles.btnOutline}} onClick={() => router.push('/messages')}>간병인과 대화</button>
+        <button style={{...styles.btn, ...styles.btnPrimary}} onClick={() => router.push('/dashboard')}>선택 항목 적용</button>
       </div>
     </div>
   )

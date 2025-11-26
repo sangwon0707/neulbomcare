@@ -368,7 +368,7 @@ export default function Screen10CaregiverReview() {
         <button style={{...styles.btn, ...styles.btnSecondary}}>임시 저장</button>
         <button
           style={{...styles.btn, ...styles.btnPrimary}}
-          onClick={() => router.push('/ai-validation')}
+          onClick={() => router.push('/care-plans-create-4')}
         >
           검토 완료
         </button>

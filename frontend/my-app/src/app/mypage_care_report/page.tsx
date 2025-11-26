@@ -267,8 +267,15 @@ export default function Screen14Checklist() {
     }
   }
 
+  const containerStyle = {
+    display: 'flex',
+    flexDirection: 'column' as const,
+    height: '100vh',
+    overflow: 'hidden'
+  }
+
   return (
-    <>
+    <div style={containerStyle}>
       <div style={styles.header}>
         <div style={styles.patientInfo}>
           <div style={styles.patientName}>김영희 어머니 (78세)</div>
@@ -389,15 +396,15 @@ export default function Screen14Checklist() {
           <div style={styles.navIcon}>👤</div>
           <div style={styles.navLabel}>환자 정보</div>
         </button>
-        <button style={styles.navItem} onClick={() => router.push('/messages')}>
+        <button style={styles.navItem} onClick={() => router.push('/mypage-2')}>
           <div style={styles.navIcon}>💬</div>
           <div style={styles.navLabel}>메시지</div>
         </button>
-        <button style={styles.navItem} onClick={() => router.push('/report')}>
+        <button style={styles.navItem} onClick={() => router.push('/mypage-3')}>
           <div style={styles.navIcon}>📊</div>
           <div style={styles.navLabel}>리포트</div>
         </button>
       </div>
-    </>
+    </div>
   )
 }

@@ -27,7 +27,7 @@ export default function WelcomePage() {
     }
 
     return (
-        <div className="flex flex-col min-h-screen bg-white relative overflow-hidden max-w-[430px] mx-auto">
+        <div className="flex flex-col min-h-screen bg-[#f9f7f2] relative overflow-hidden max-w-[430px] mx-auto font-['Pretendard']">
             {/* Background Gradients */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
                 <div className="absolute top-[-10%] right-[-20%] w-[400px] h-[400px] bg-purple-100/40 rounded-full blur-3xl" />
