@@ -4,7 +4,7 @@ import { MapPin, ChevronLeft, ChevronRight } from "lucide-react"
 
 export default function SchedulePage() {
     return (
-        <div className="flex flex-col min-h-screen bg-gray-50 pb-20">
+        <div className="flex flex-col min-h-screen bg-gray-50 pb-20 overflow-y-auto">
             <div className="px-6 py-8">
                 <h1 className="text-2xl font-bold text-gray-900 mb-6">일정 관리</h1>
 
