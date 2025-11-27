@@ -1,61 +1,68 @@
+"use client"
+
 import Link from "next/link"
+import Image from "next/image"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { ArrowRight, Calendar, Pill, ShieldCheck, Star } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 
-export default function Home() {
-  return (
-    <div className="flex flex-col min-h-screen bg-gray-50 pb-20">
-      {/* Hero Section */}
-      <section className="relative w-full py-12 px-6 bg-gradient-to-br from-primary/10 to-secondary/10 rounded-b-[2rem] overflow-hidden">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-primary/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 bg-secondary/20 rounded-full blur-3xl" />
+export default function RootPage() {
+    return (
+        <div className="flex flex-col min-h-screen bg-[#f9f7f2] relative overflow-hidden font-['Pretendard']">
+            {/* Background Gradients */}
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
+                <div className="absolute top-[-10%] right-[-20%] w-[500px] h-[500px] bg-[#f9f7f2] rounded-full blur-3xl" />
+                <div className="absolute bottom-[-10%] left-[-20%] w-[500px] h-[500px] bg-[#f9f7f2] rounded-full blur-3xl" />
+            </div>
 
-        <div className="relative z-10 flex flex-col items-start space-y-4">
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 leading-tight">
-            데이터로 선택하는 <br />
-            <span className="text-primary">안심 간병, 늘봄케어</span>
-          </h1>
-          <p className="text-gray-600 text-sm leading-relaxed max-w-[300px]">
-            AI가 분석한 최적의 간병인을 3분 만에 매칭해드립니다.
-            가족은 안심하고, 환자는 편안한 케어를 경험하세요.
-          </p>
-          <div className="pt-4 w-full">
-            <Button asChild size="lg" className="w-full rounded-xl shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 text-white font-bold h-12">
-              <Link href="/matching">
-                간병인 찾기 <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-          </div>
+            <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 text-center">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    className="mb-8"
+                >
+                    <div className="inline-flex items-center justify-center w-24 h-24 mb-8 rounded-[2rem] bg-gradient-to-br from-primary/10 to-secondary/10 shadow-sm">
+                        <div className="relative w-20 h-20">
+                            <Image
+                                src="/assets/logo_color.png"
+                                alt="Neulbom Care Logo"
+                                fill
+                                className="object-contain"
+                            />
+                        </div>
+                    </div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">
+                        나에게 딱 맞는 <br />
+                        <span className="text-black">
+                            AI 간병인 매칭
+                        </span>
+                    </h1>
+                    <p className="text-gray-500 leading-relaxed max-w-[280px] mx-auto">
+                        몇 가지 간단한 질문으로 <br />
+                        가장 잘 맞는 간병인을 찾아드릴게요.
+                    </p>
+                </motion.div>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                    className="w-full max-w-[300px] space-y-4"
+                >
+                    <Button asChild size="lg" className="w-full h-14 text-lg font-bold rounded-2xl shadow-lg shadow-primary/20 bg-gradient-to-r from-primary to-teal-400 hover:opacity-90 transition-opacity border-none">
+                        <Link href="/personality-test">
+                            시작하기 <ArrowRight className="ml-2 w-5 h-5" />
+                        </Link>
+                    </Button>
+
+                    <Button asChild variant="ghost" className="w-full text-gray-400 hover:text-gray-600 hover:bg-transparent">
+                        <Link href="/home">
+                            다음에 할게요
+                        </Link>
+                    </Button>
+                </motion.div>
+            </div>
         </div>
-      </section>
-
-      {/* Quick Menu */}
-      <section className="px-6 -mt-8 relative z-20">
-        <div className="grid grid-cols-3 gap-4">
-          <Link href="/matching" className="flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="p-3 bg-blue-50 rounded-full mb-2">
-              <ShieldCheck className="h-6 w-6 text-blue-500" />
-            </div>
-            <span className="text-xs font-medium text-gray-700">AI 매칭</span>
-          </Link>
-          <Link href="/schedule" className="flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="p-3 bg-green-50 rounded-full mb-2">
-              <Calendar className="h-6 w-6 text-green-500" />
-            </div>
-            <span className="text-xs font-medium text-gray-700">일정 관리</span>
-          </Link>
-          <Link href="/medication" className="flex flex-col items-center p-4 bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-            <div className="p-3 bg-orange-50 rounded-full mb-2">
-              <Pill className="h-6 w-6 text-orange-500" />
-            </div>
-            <span className="text-xs font-medium text-gray-700">복약 관리</span>
-          </Link>
-        </div>
-      </section>
-
-
-    </div >
-  )
+    )
 }

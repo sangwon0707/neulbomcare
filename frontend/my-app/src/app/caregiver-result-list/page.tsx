@@ -1,0 +1,452 @@
+"use client"
+
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { background, firstPrimary, secondPrimary } from '../colors'
+import { apiGet } from '@/lib/api'
+import ErrorAlert from '@/components/ErrorAlert'
+import type { MatchingResponse, CaregiverMatch } from '@/types/api'
+
+export default function Screen7Matching() {
+  const router = useRouter()
+  const [flippedCards, setFlippedCards] = useState<{[key: string]: boolean}>({})
+  const [matches, setMatches] = useState<CaregiverMatch[]>([])
+  const [totalCount, setTotalCount] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<Error | null>(null)
+
+  // 기본 간병인 데이터 (API에서 데이터가 없을 경우 사용)
+  const defaultCaregivers: CaregiverMatch[] = [
+    {
+      matching_id: 1,
+      caregiver_id: 1,
+      caregiver_name: '김미숙',
+      grade: '요양보호사 1급',
+      match_score: 92,
+      experience_years: 8,
+      specialties: ['치매 케어', '당뇨 관리', '고혈압 관리'],
+      hourly_rate: 25000,
+      avg_rating: 4.9,
+      profile_image_url: ''
+    },
+    {
+      matching_id: 2,
+      caregiver_id: 2,
+      caregiver_name: '이정호',
+      grade: '요양보호사 1급',
+      match_score: 88,
+      experience_years: 6,
+      specialties: ['치매 케어', '재활 운동'],
+      hourly_rate: 23000,
+      avg_rating: 4.8,
+      profile_image_url: ''
+    },
+    {
+      matching_id: 3,
+      caregiver_id: 3,
+      caregiver_name: '박은영',
+      grade: '요양보호사 1급',
+      match_score: 85,
+      experience_years: 12,
+      specialties: ['당뇨 관리', '식사 케어', '투약 관리'],
+      hourly_rate: 27000,
+      avg_rating: 4.7,
+      profile_image_url: ''
+    }
+  ]
+
+  useEffect(() => {
+    const fetchMatchingResults = async () => {
+      // 먼저 세션 스토리지에서 매칭 결과 확인
+      const storedResults = sessionStorage.getItem('matching_results')
+      if (storedResults) {
+        try {
+          const parsed: MatchingResponse = JSON.parse(storedResults)
+          if (parsed.matches && parsed.matches.length > 0) {
+            setMatches(parsed.matches)
+            setTotalCount(parsed.total_count)
+            setLoading(false)
+            return
+          }
+        } catch (e) {
+          console.error('세션 스토리지 파싱 오류:', e)
+        }
+      }
+
+      // API에서 직접 조회
+      const patientId = sessionStorage.getItem('patient_id')
+      if (patientId) {
+        try {
+          const response = await apiGet<MatchingResponse>(
+            `/api/patients/${patientId}/matching-results?status=recommended`
+          )
+
+          if (response.matches && response.matches.length > 0) {
+            setMatches(response.matches)
+            setTotalCount(response.total_count)
+          } else {
+            // API에서 데이터가 없으면 기본 데이터 사용
+            setMatches(defaultCaregivers)
+            setTotalCount(defaultCaregivers.length)
+          }
+        } catch (err) {
+          console.error('매칭 결과 조회 실패:', err)
+          // 에러 시 기본 데이터 사용
+          setMatches(defaultCaregivers)
+          setTotalCount(defaultCaregivers.length)
+        }
+      } else {
+        // patient_id가 없으면 기본 데이터 사용
+        setMatches(defaultCaregivers)
+        setTotalCount(defaultCaregivers.length)
+      }
+
+      setLoading(false)
+    }
+
+    fetchMatchingResults()
+  }, [])
+
+  const handleSelectCaregiver = (caregiver: CaregiverMatch) => {
+    // Store selected caregiver in session storage and navigate
+    sessionStorage.setItem('selectedCaregiver', JSON.stringify(caregiver))
+    sessionStorage.setItem('matching_id', caregiver.matching_id.toString())
+    router.push('/mypage_mycaregiver')
+  }
+
+  const getAvatarEmoji = (name: string) => {
+    // 이름에 따라 다른 아바타 표시
+    if (name.includes('미숙') || name.includes('은영')) return '👩‍⚕️'
+    return '👨‍⚕️'
+  }
+
+  const styles = {
+    navBar: {
+      display: 'flex',
+      alignItems: 'center',
+      padding: '15px 20px',
+      borderBottom: '1px solid #f0f0f0'
+    },
+    backBtn: {
+      fontSize: '20px',
+      cursor: 'pointer',
+      color: firstPrimary,
+      background: 'none',
+      border: 'none'
+    },
+    navTitle: {
+      flex: 1,
+      textAlign: 'center' as const,
+      fontWeight: 600,
+      fontSize: '17px'
+    },
+    filterBtn: {
+      fontSize: '20px',
+      cursor: 'pointer',
+      color: firstPrimary,
+      background: 'none',
+      border: 'none'
+    },
+    header: {
+      padding: '20px',
+      background: background,
+      borderBottom: '1px solid #f0f0f0'
+    },
+    h2: {
+      fontSize: '22px',
+      color: '#333',
+      marginBottom: '5px'
+    },
+    p: {
+      fontSize: '14px',
+      color: '#666'
+    },
+    content: {
+      flex: 1,
+      overflowY: 'auto' as const,
+      padding: '15px',
+      background: background
+    },
+    caregiverCard: {
+      background: 'white',
+      borderRadius: '15px',
+      padding: '20px',
+      marginBottom: '15px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.05)'
+    },
+    caregiverHeader: {
+      display: 'flex',
+      gap: '15px',
+      marginBottom: '15px',
+      paddingBottom: '15px',
+      borderBottom: '1px solid #f0f0f0'
+    },
+    caregiverAvatar: {
+      width: '70px',
+      height: '70px',
+      borderRadius: '35px',
+      background: background,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontSize: '36px',
+      flexShrink: 0
+    },
+    caregiverInfo: {
+      flex: 1
+    },
+    nameRating: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      marginBottom: '5px'
+    },
+    caregiverName: {
+      fontSize: '18px',
+      fontWeight: 600,
+      color: '#333'
+    },
+    rating: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '4px',
+      fontSize: '14px'
+    },
+    star: {
+      color: secondPrimary
+    },
+    ratingCount: {
+      color: '#999'
+    },
+    certificationBadge: {
+      display: 'inline-block',
+      padding: '4px 10px',
+      background: '#dbeafe',
+      color: '#1e40af',
+      borderRadius: '12px',
+      fontSize: '12px',
+      fontWeight: 600,
+      marginRight: '6px'
+    },
+    experience: {
+      fontSize: '13px',
+      color: '#666',
+      marginTop: '5px'
+    },
+    caregiverBody: {
+      marginBottom: '15px'
+    },
+    specialtyTags: {
+      display: 'flex',
+      flexWrap: 'wrap' as const,
+      gap: '6px',
+      marginBottom: '12px'
+    },
+    specialtyTag: {
+      padding: '6px 12px',
+      background: '#f0f4ff',
+      color: firstPrimary,
+      borderRadius: '12px',
+      fontSize: '12px'
+    },
+    matchInfo: {
+      background: '#fce7f3',
+      border: `1px solid ${secondPrimary}`,
+      padding: '12px',
+      borderRadius: '10px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px'
+    },
+    matchIcon: {
+      fontSize: '24px'
+    },
+    matchText: {
+      flex: 1
+    },
+    matchScore: {
+      fontSize: '18px',
+      fontWeight: 700,
+      color: secondPrimary
+    },
+    matchDetail: {
+      fontSize: '11px',
+      color: secondPrimary,
+      cursor: 'pointer'
+    },
+    caregiverFooter: {
+      display: 'flex',
+      gap: '10px'
+    },
+    rate: {
+      fontSize: '16px',
+      fontWeight: 700,
+      color: firstPrimary,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '0 10px'
+    },
+    actionBtn: {
+      flex: 1,
+      padding: '12px',
+      borderRadius: '10px',
+      border: '1px solid #e0e0e0',
+      background: 'white',
+      fontSize: '14px',
+      fontWeight: 600,
+      cursor: 'pointer',
+      color: '#333'
+    },
+    actionBtnPrimary: {
+      background: firstPrimary,
+      color: 'white',
+      borderColor: firstPrimary
+    },
+    bottomSection: {
+      padding: '15px 20px',
+      background: background,
+      borderTop: '1px solid #f0f0f0'
+    },
+    showMoreBtn: {
+      width: '100%',
+      padding: '12px',
+      background: '#f9fafb',
+      color: firstPrimary,
+      border: '1px solid #e0e0e0',
+      borderRadius: '10px',
+      fontSize: '14px',
+      fontWeight: 600,
+      cursor: 'pointer',
+      marginBottom: '10px'
+    },
+    skipBtn: {
+      width: '100%',
+      padding: '12px',
+      background: 'white',
+      color: '#999',
+      border: 'none',
+      fontSize: '14px',
+      cursor: 'pointer'
+    },
+    loadingContainer: {
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '200px',
+      fontSize: '16px',
+      color: '#666'
+    }
+  }
+
+  const handleCardClick = (name: string) => {
+    setFlippedCards(prev => ({
+      ...prev,
+      [name]: !prev[name]
+    }))
+  }
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: background }}>
+        <div style={styles.navBar}>
+          <button style={styles.backBtn} onClick={() => router.push('/caregiver-finder')}>‹</button>
+          <div style={styles.navTitle}>추천 간병인</div>
+          <button style={styles.filterBtn}>⚙️</button>
+        </div>
+        <div style={styles.loadingContainer}>
+          매칭 결과를 불러오는 중...
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: background }}>
+      <ErrorAlert error={error} onClose={() => setError(null)} />
+
+      <div style={styles.navBar}>
+        <button style={styles.backBtn} onClick={() => router.push('/caregiver-finder')}>‹</button>
+        <div style={styles.navTitle}>추천 간병인</div>
+        <button style={styles.filterBtn}>⚙️</button>
+      </div>
+
+      <div style={styles.header}>
+        <h2 style={styles.h2}>환자분에게 적합한 간병인</h2>
+        <p style={styles.p}>{totalCount}명의 전문가를 찾았습니다</p>
+      </div>
+
+      <div style={styles.content}>
+        {matches.length === 0 ? (
+          <div style={styles.loadingContainer}>
+            매칭된 간병인이 없습니다.
+          </div>
+        ) : (
+          matches.map((caregiver, index) => (
+            <div key={caregiver.matching_id || index} style={styles.caregiverCard}>
+              <div style={styles.caregiverHeader}>
+                <div style={styles.caregiverAvatar}>
+                  {caregiver.profile_image_url ? (
+                    <img
+                      src={caregiver.profile_image_url}
+                      alt={caregiver.caregiver_name}
+                      style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    getAvatarEmoji(caregiver.caregiver_name)
+                  )}
+                </div>
+                <div style={styles.caregiverInfo}>
+                  <div style={styles.nameRating}>
+                    <span style={styles.caregiverName}>{caregiver.caregiver_name}</span>
+                  </div>
+                  <div style={styles.rating}>
+                    <span style={styles.star}>⭐</span>
+                    <span>{caregiver.avg_rating}</span>
+                  </div>
+                  <div style={{marginTop: '8px'}}>
+                    <span style={styles.certificationBadge}>{caregiver.grade}</span>
+                  </div>
+                  <div style={styles.experience}>경력 {caregiver.experience_years}년</div>
+                </div>
+              </div>
+
+              <div style={styles.caregiverBody}>
+                <div style={styles.specialtyTags}>
+                  {caregiver.specialties.map((specialty, i) => (
+                    <span key={i} style={styles.specialtyTag}>{specialty}</span>
+                  ))}
+                </div>
+                <div style={styles.matchInfo}>
+                  <div style={styles.matchIcon}>✨</div>
+                  <div style={styles.matchText}>
+                    <div style={styles.matchScore}>{caregiver.match_score}% 매칭</div>
+                    <div style={styles.matchDetail}>▼ 매칭 근거 보기</div>
+                  </div>
+                </div>
+              </div>
+
+              <div style={styles.caregiverFooter}>
+                <div style={styles.rate}>{caregiver.hourly_rate.toLocaleString()}원/시간</div>
+                <button style={styles.actionBtn}>프로필 보기</button>
+                <button
+                  style={{...styles.actionBtn, ...styles.actionBtnPrimary}}
+                  onClick={() => handleSelectCaregiver(caregiver)}
+                >
+                  선택
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div style={styles.bottomSection}>
+        <button style={styles.showMoreBtn}>더 많은 간병인 보기</button>
+        <button style={styles.skipBtn} onClick={() => router.push('/care-plans-create-1')}>
+          간병인 없이 진행하기
+        </button>
+      </div>
+    </div>
+  )
+}

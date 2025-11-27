@@ -1,2 +1,6 @@
 [config]
-PROJECT=backend
+PROJECT=backend6단계: 데이터베이스 확인
+왼쪽 패널에서 Local PostgreSQL > Databases 확장
+bluedonulab 데이터베이스 찾기
+Schemas > public > Tables 확장
+users 테이블 확인

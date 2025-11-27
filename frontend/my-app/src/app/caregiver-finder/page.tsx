@@ -1,18 +1,21 @@
-// -*- coding: utf-8 -*-
 "use client"
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { background, firstPrimary } from '../colors'
+import { apiPost } from '@/lib/api'
+import ErrorAlert from '@/components/ErrorAlert'
+import type { MatchingRequest, MatchingResponse } from '@/types/api'
 
 export default function Screen6Requirements() {
   const router = useRouter()
   const [careType, setCareType] = useState('nursing-aide')
-  const [timeSlots, setTimeSlots] = useState(['morning', 'afternoon'])
-  const [gender, setGender] = useState('any')
+  const [timeSlots, setTimeSlots] = useState<string[]>(['morning', 'afternoon'])
+  const [gender, setGender] = useState<'Male' | 'Female' | 'any'>('any')
   const [experience, setExperience] = useState('5plus')
-  const [skills, setSkills] = useState(['dementia', 'diabetes'])
-  const [budget, setBudget] = useState(25000)
+  const [skills, setSkills] = useState<string[]>(['dementia', 'diabetes'])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<Error | null>(null)
 
   const toggleTimeSlot = (slot: string) => {
     setTimeSlots(prev =>
@@ -26,9 +29,57 @@ export default function Screen6Requirements() {
     )
   }
 
+  const handleSubmit = async () => {
+    const patientId = sessionStorage.getItem('patient_id')
+    if (!patientId) {
+      alert('환자 정보를 찾을 수 없습니다. 처음부터 다시 시작해주세요.')
+      router.push('/patient-condition-1')
+      return
+    }
+
+    if (timeSlots.length === 0) {
+      alert('희망 시간을 최소 1개 이상 선택해주세요.')
+      return
+    }
+
+    setLoading(true)
+    setError(null)
+
+    try {
+      const payload: MatchingRequest = {
+        patient_id: parseInt(patientId),
+        requirements: {
+          care_type: careType,
+          time_slots: timeSlots,
+          gender: gender,
+          experience: experience,
+          skills: skills
+        }
+      }
+
+      const response = await apiPost<MatchingResponse>(
+        '/api/matching',
+        payload
+      )
+
+      console.log('매칭 요청 성공:', response)
+
+      // 매칭 결과를 세션 스토리지에 저장
+      sessionStorage.setItem('matching_results', JSON.stringify(response))
+
+      router.push('/matching')
+    } catch (err) {
+      console.error('매칭 요청 실패:', err)
+      setError(err as Error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const styles = {
     container: {
-      minHeight: '100vh',
+      width: '100%',
+      height: '100vh',
       background: background,
       display: 'flex',
       flexDirection: 'column' as const
@@ -51,6 +102,30 @@ export default function Screen6Requirements() {
       textAlign: 'center' as const,
       fontWeight: 600,
       fontSize: '17px'
+    },
+    progress: {
+      flex: 1,
+      margin: '0 20px'
+    },
+    progressBar: {
+      width: '100%',
+      height: '4px',
+      background: 'transparent',
+      borderRadius: '2px',
+      display: 'flex',
+      gap: '4px'
+    },
+    progressSegment: {
+      flex: 1,
+      height: '100%',
+      background: '#e0e0e0',
+      borderRadius: '2px'
+    },
+    progressSegmentFilled: {
+      flex: 1,
+      height: '100%',
+      background: firstPrimary,
+      borderRadius: '2px'
     },
     content: {
       flex: 1,
@@ -218,9 +293,9 @@ export default function Screen6Requirements() {
       marginTop: '10px'
     },
     bottomBar: {
-      padding: '20px',
-      background: background,
-      borderTop: '1px solid #f0f0f0'
+      padding: '20px 0',
+      marginTop: '10px',
+      paddingBottom: '100px'
     },
     findButton: {
       width: '100%',
@@ -231,16 +306,31 @@ export default function Screen6Requirements() {
       borderRadius: '12px',
       fontSize: '17px',
       fontWeight: 600,
-      cursor: 'pointer'
+      cursor: 'pointer',
+      opacity: 1
+    },
+    findButtonDisabled: {
+      opacity: 0.5,
+      cursor: 'not-allowed'
     }
   }
 
   return (
     <div style={styles.container}>
+      <ErrorAlert error={error} onClose={() => setError(null)} />
+
       <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => router.push('/team')}>←</button>
-        <div style={styles.navTitle}>요구사항</div>
-        <div style={{width: '20px'}}></div>
+        <button style={styles.backBtn} onClick={() => router.push('/patient-condition-3')}>←</button>
+        <div style={styles.progress}>
+          <div style={styles.progressBar}>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+            <div style={styles.progressSegmentFilled}></div>
+          </div>
+        </div>
+        <div style={{fontSize: '14px', color: '#000', cursor: 'pointer'}}>건너뛰기</div>
       </div>
 
       <div style={styles.content}>
@@ -313,16 +403,20 @@ export default function Screen6Requirements() {
           <div style={{marginBottom: '15px'}}>
             <div style={{fontSize: '13px', color: '#666', marginBottom: '8px'}}>성별</div>
             <div style={styles.preferenceGrid}>
-              {['any', 'male', 'female'].map(g => (
+              {[
+                { id: 'any' as const, label: '무관' },
+                { id: 'Male' as const, label: '남성' },
+                { id: 'Female' as const, label: '여성' }
+              ].map(g => (
                 <button
-                  key={g}
+                  key={g.id}
                   style={{
                     ...styles.preferenceBtn,
-                    ...(gender === g ? styles.preferenceBtnSelected : {})
+                    ...(gender === g.id ? styles.preferenceBtnSelected : {})
                   }}
-                  onClick={() => setGender(g)}
+                  onClick={() => setGender(g.id)}
                 >
-                  {g === 'any' ? '무관' : g === 'male' ? '남성' : '여성'}
+                  {g.label}
                 </button>
               ))}
             </div>
@@ -374,10 +468,18 @@ export default function Screen6Requirements() {
           </div>
         </div>
 
-      </div>
-
-      <div style={styles.bottomBar}>
-        <button style={styles.findButton} onClick={() => router.push('/matching')}>매칭 찾기</button>
+        <div style={styles.bottomBar}>
+          <button
+            style={{
+              ...styles.findButton,
+              ...(loading ? styles.findButtonDisabled : {})
+            }}
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? '매칭 중...' : '매칭 찾기'}
+          </button>
+        </div>
       </div>
     </div>
   )
