@@ -1,10 +1,11 @@
 "use client"
 
+import Image from "next/image"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { Sparkles, Calendar, ChevronRight } from "lucide-react"
+import { Calendar, ChevronRight } from "lucide-react"
 
 export default function OnboardingPage() {
     const router = useRouter()
@@ -16,14 +17,14 @@ export default function OnboardingPage() {
         } else {
             // 온보딩 완료 플래그 저장
             localStorage.setItem('onboarded', 'true')
-            router.push("/personality-test")
+            router.push("/home")
         }
     }
 
     const handleSkip = () => {
         // 온보딩 완료 플래그 저장
         localStorage.setItem('onboarded', 'true')
-        router.push("/personality-test")
+        router.push("/home")
     }
 
     return (
@@ -46,8 +47,15 @@ export default function OnboardingPage() {
                                 transition={{ duration: 0.3 }}
                                 className="w-full"
                             >
-                                <div className="w-24 h-24 bg-gradient-to-br from-primary/10 to-primary/20 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm">
-                                    <Sparkles className="w-12 h-12 text-primary" />
+                                <div className="w-24 h-24 flex items-center justify-center mx-auto mb-8">
+                                    <Image
+                                        src="/assets/logo_color.png"
+                                        alt="Neulbom Care Logo"
+                                        width={96}
+                                        height={96}
+                                        className="w-full h-full object-contain"
+                                        priority
+                                    />
                                 </div>
                                 <h1 className="text-2xl font-bold text-gray-900 mb-4 leading-tight">
                                     쉬운 간병 경험을 <br />

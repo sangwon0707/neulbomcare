@@ -7,7 +7,7 @@ import { ChatBubble } from "@/components/ui/chat-bubble"
 import { Button } from "@/components/ui/button"
 import { Send, Sparkles } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { apiPost } from "@/lib/api"
+import { apiPost } from "@/utils/api"
 import ErrorAlert from "@/components/ErrorAlert"
 import type { PersonalityTestRequest, PersonalityTestResponse } from "@/types/api"
 
@@ -304,7 +304,7 @@ export default function PersonalityTestPage() {
                                     지금 바로 연결해드릴게요.
                                 </p>
                                 <Button
-                                    onClick={() => router.push("/caregiver-finder")}
+                                    onClick={() => router.push("/login")}
                                     className="w-full h-14 text-lg font-bold rounded-2xl shadow-lg shadow-primary/20 bg-primary hover:bg-primary/90 transition-transform hover:scale-[1.02] active:scale-[0.98]"
                                 >
                                     간병인 찾기

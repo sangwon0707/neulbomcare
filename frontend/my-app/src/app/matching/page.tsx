@@ -1,9 +1,9 @@
 "use client"
 
-import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { background, firstPrimary, secondPrimary } from '../colors'
-import { apiGet } from '@/lib/api'
+import { apiGet } from '@/utils/api'
 import ErrorAlert from '@/components/ErrorAlert'
 import type { MatchingResponse, CaregiverMatch } from '@/types/api'
 

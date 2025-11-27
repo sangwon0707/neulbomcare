@@ -1,13 +1,13 @@
 "use client"
 
-import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { background, firstPrimary, secondPrimary } from '../colors'
-import { apiGet } from '@/lib/api'
+import { apiGet } from '@/utils/api'
 import ErrorAlert from '@/components/ErrorAlert'
 import type { DashboardResponse } from '@/types/api'
 
-export default function Screen13Dashboard() {
+export default function MyPageDashboard() {
   const router = useRouter()
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(null)
   const [loading, setLoading] = useState(true)
@@ -473,7 +473,7 @@ export default function Screen13Dashboard() {
                   {caregiverInfo.start_date && `시작일: ${caregiverInfo.start_date}`}
                 </div>
               </div>
-              <div style={{fontSize: '18px', display: 'flex', alignItems: 'center'}}>›</div>
+              <div style={{ fontSize: '18px', display: 'flex', alignItems: 'center' }}>›</div>
             </div>
           </div>
         )}
@@ -504,8 +504,8 @@ export default function Screen13Dashboard() {
             (정상: 120/80, 현재: 135/82)
           </div>
           <div style={styles.warningButtons}>
-            <button style={{...styles.warningBtn, ...styles.btnDetail}}>상세 보기</button>
-            <button style={{...styles.warningBtn, ...styles.btnContact}}>간병인에게 문의</button>
+            <button style={{ ...styles.warningBtn, ...styles.btnDetail }}>상세 보기</button>
+            <button style={{ ...styles.warningBtn, ...styles.btnContact }}>간병인에게 문의</button>
           </div>
         </div>
 
@@ -557,7 +557,7 @@ export default function Screen13Dashboard() {
       </div>
 
       <div style={styles.bottomNav}>
-        <button style={{...styles.navItem, ...styles.navItemActive}}>
+        <button style={{ ...styles.navItem, ...styles.navItemActive }}>
           <div style={styles.navIcon}>🏠</div>
           <div style={styles.navLabel}>홈</div>
         </button>

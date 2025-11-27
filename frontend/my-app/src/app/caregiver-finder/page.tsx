@@ -1,13 +1,13 @@
 "use client"
 
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { background, firstPrimary } from '../colors'
-import { apiPost } from '@/lib/api'
+import { apiPost } from '@/utils/api'
 import ErrorAlert from '@/components/ErrorAlert'
 import type { MatchingRequest, MatchingResponse } from '@/types/api'
 
-export default function Screen6Requirements() {
+export default function CaregiverFinder() {
   const router = useRouter()
   const [careType, setCareType] = useState('nursing-aide')
   const [timeSlots, setTimeSlots] = useState<string[]>(['morning', 'afternoon'])
@@ -330,7 +330,7 @@ export default function Screen6Requirements() {
             <div style={styles.progressSegmentFilled}></div>
           </div>
         </div>
-        <div style={{fontSize: '14px', color: '#000', cursor: 'pointer'}}>건너뛰기</div>
+        <div style={{ fontSize: '14px', color: '#000', cursor: 'pointer' }}>건너뛰기</div>
       </div>
 
       <div style={styles.content}>
@@ -342,21 +342,21 @@ export default function Screen6Requirements() {
           <div style={styles.sectionTitle}>돌봄 유형</div>
           <div style={styles.typeOptions}>
             <div
-              style={{...styles.typeOption, ...(careType === 'nursing-aide' ? styles.typeOptionSelected : {})}}
+              style={{ ...styles.typeOption, ...(careType === 'nursing-aide' ? styles.typeOptionSelected : {}) }}
               onClick={() => setCareType('nursing-aide')}
             >
               <div style={styles.optionLabel}>요양보호사</div>
               <div style={styles.optionDesc}>식사, 목욕, 이동 등 일상 돌봄</div>
             </div>
             <div
-              style={{...styles.typeOption, ...(careType === 'nursing-assistant' ? styles.typeOptionSelected : {})}}
+              style={{ ...styles.typeOption, ...(careType === 'nursing-assistant' ? styles.typeOptionSelected : {}) }}
               onClick={() => setCareType('nursing-assistant')}
             >
               <div style={styles.optionLabel}>간호조무사</div>
               <div style={styles.optionDesc}>기본 의료 보조 업무</div>
             </div>
             <div
-              style={{...styles.typeOption, ...(careType === 'nurse' ? styles.typeOptionSelected : {})}}
+              style={{ ...styles.typeOption, ...(careType === 'nurse' ? styles.typeOptionSelected : {}) }}
               onClick={() => setCareType('nurse')}
             >
               <div style={styles.optionLabel}>간호사</div>
@@ -390,7 +390,7 @@ export default function Screen6Requirements() {
                 </div>
                 <div style={styles.timeLabel}>
                   <div>{slot.label}</div>
-                  <span style={{fontSize: '11px', color: '#999'}}>{slot.time}</span>
+                  <span style={{ fontSize: '11px', color: '#999' }}>{slot.time}</span>
                 </div>
               </div>
             ))}
@@ -400,8 +400,8 @@ export default function Screen6Requirements() {
         <div style={styles.section}>
           <div style={styles.sectionTitle}>선호 조건 (선택)</div>
 
-          <div style={{marginBottom: '15px'}}>
-            <div style={{fontSize: '13px', color: '#666', marginBottom: '8px'}}>성별</div>
+          <div style={{ marginBottom: '15px' }}>
+            <div style={{ fontSize: '13px', color: '#666', marginBottom: '8px' }}>성별</div>
             <div style={styles.preferenceGrid}>
               {[
                 { id: 'any' as const, label: '무관' },
@@ -422,8 +422,8 @@ export default function Screen6Requirements() {
             </div>
           </div>
 
-          <div style={{marginBottom: '15px'}}>
-            <div style={{fontSize: '13px', color: '#666', marginBottom: '8px'}}>경력</div>
+          <div style={{ marginBottom: '15px' }}>
+            <div style={{ fontSize: '13px', color: '#666', marginBottom: '8px' }}>경력</div>
             <div style={styles.preferenceGrid}>
               {[
                 { id: 'less1', label: '1년 미만' },
@@ -446,7 +446,7 @@ export default function Screen6Requirements() {
           </div>
 
           <div>
-            <div style={{fontSize: '13px', color: '#666', marginBottom: '8px'}}>필요 기술</div>
+            <div style={{ fontSize: '13px', color: '#666', marginBottom: '8px' }}>필요 기술</div>
             <div style={styles.skillList}>
               {[
                 { id: 'dementia', label: '치매 환자 케어' },

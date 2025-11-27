@@ -1,9 +1,9 @@
 "use client"
 
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
-import { apiPost } from '@/lib/api'
+import { apiPost } from '@/utils/api'
 import ErrorAlert from '@/components/ErrorAlert'
 import type { MedicationsCreateRequest, MedicationResponse } from '@/types/api'
 
@@ -83,7 +83,7 @@ export default function PatientCondition3Page() {
             <div className="flex-1 h-full bg-gray-200 rounded-sm"></div>
           </div>
         </div>
-        <div className="text-sm text-black cursor-pointer">건너뛰기</div>
+        <div className="w-8"></div> {/* Spacer to balance the header since Skip is removed */}
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 py-8">

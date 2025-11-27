@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { background, firstPrimary } from '../colors'
-import { apiGet } from '@/lib/api'
+import { apiGet } from '@/utils/api'
 import ErrorAlert from '@/components/ErrorAlert'
 import type { CarePlansResponse, Schedule, MealPlan } from '@/types/api'
 
@@ -287,13 +287,13 @@ export default function Screen9Schedule() {
       <div style={styles.content}>
         <div style={styles.tabBar}>
           <button
-            style={{...styles.tab, ...(activeTab === 'weekly' ? styles.tabActive : {})}}
+            style={{ ...styles.tab, ...(activeTab === 'weekly' ? styles.tabActive : {}) }}
             onClick={() => setActiveTab('weekly')}
           >
             주간
           </button>
           <button
-            style={{...styles.tab, ...(activeTab === 'monthly' ? styles.tabActive : {})}}
+            style={{ ...styles.tab, ...(activeTab === 'monthly' ? styles.tabActive : {}) }}
             onClick={() => setActiveTab('monthly')}
           >
             월간
@@ -344,13 +344,13 @@ export default function Screen9Schedule() {
         <div style={styles.reviewCard}>
           <h3 style={styles.reviewCardH3}>전문가 의견을 들어보세요</h3>
           <p style={styles.reviewCardP}>간병인님께 이 일정에 대한 검토를 요청하시겠어요?</p>
-          <p style={{...styles.reviewCardP, fontSize: '13px', opacity: 0.9}}>
+          <p style={{ ...styles.reviewCardP, fontSize: '13px', opacity: 0.9 }}>
             전문가의 현장 경험이 더해지면 더 실용적인 케어 플랜이 됩니다.
           </p>
           <div style={styles.reviewButtons}>
-            <button style={{...styles.btn, ...styles.btnOutline}}>나중에</button>
+            <button style={{ ...styles.btn, ...styles.btnOutline }}>나중에</button>
             <button
-              style={{...styles.btn, ...styles.btnPrimary}}
+              style={{ ...styles.btn, ...styles.btnPrimary }}
               onClick={() => router.push('/care-plans-create-3')}
             >
               리뷰 요청하기
@@ -360,9 +360,9 @@ export default function Screen9Schedule() {
       </div>
 
       <div style={styles.bottomBar}>
-        <button style={{...styles.btn, ...styles.btnSecondary}}>일정 수정</button>
+        <button style={{ ...styles.btn, ...styles.btnSecondary }}>일정 수정</button>
         <button
-          style={{...styles.btn, ...styles.btnAction}}
+          style={{ ...styles.btn, ...styles.btnAction }}
           onClick={() => router.push('/mypage-dashboard')}
         >
           이대로 시작

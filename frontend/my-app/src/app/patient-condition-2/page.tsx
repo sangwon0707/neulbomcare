@@ -1,15 +1,13 @@
 "use client"
 
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
-import { apiPut } from '@/lib/api'
+import { apiPut } from '@/utils/api'
 import ErrorAlert from '@/components/ErrorAlert'
-import type { HealthStatusUpdateRequest, DiseaseItem, HealthConditionResponse } from '@/types/api'
+import type { HealthStatusUpdateRequest, HealthConditionResponse, DiseaseItem } from '@/types/api'
 
-const diseasesOptions: (DiseaseItem & { icon: string })[] = [
-  { id: 'dementia', name: '치매/인지장애', icon: '🧠' },
-  { id: 'stroke', name: '뇌졸중/중풍', icon: '⚡' },
+const diseasesOptions: DiseaseItem[] = [
   { id: 'cancer', name: '암', icon: '🎗️' },
   { id: 'diabetes', name: '당뇨병', icon: '🍬' },
   { id: 'hypertension', name: '고혈압', icon: '❤️' },
@@ -101,7 +99,7 @@ export default function PatientCondition2Page() {
             <div className="flex-1 h-full bg-gray-200 rounded-sm"></div>
           </div>
         </div>
-        <div className="text-sm text-black cursor-pointer">건너뛰기</div>
+        <div className="w-8"></div> {/* Spacer to balance the header since Skip is removed */}
       </div>
 
       <div className="flex-1 overflow-y-auto px-5 py-8">
@@ -119,11 +117,10 @@ export default function PatientCondition2Page() {
               {diseasesOptions.map(disease => (
                 <div
                   key={disease.id}
-                  className={`p-4 border-2 rounded-xl text-center cursor-pointer transition-all ${
-                    isDiseaseSelected(disease.id)
-                      ? 'border-[#18D4C6] bg-blue-50'
-                      : 'border-gray-200'
-                  }`}
+                  className={`p-4 border-2 rounded-xl text-center cursor-pointer transition-all ${isDiseaseSelected(disease.id)
+                    ? 'border-[#18D4C6] bg-blue-50'
+                    : 'border-gray-200'
+                    }`}
                   onClick={() => toggleDisease(disease)}
                 >
                   <div className="text-4xl mb-2">{disease.icon}</div>
@@ -152,11 +149,10 @@ export default function PatientCondition2Page() {
               {mobilityOptions.map(option => (
                 <div
                   key={option.id}
-                  className={`p-4 border-2 rounded-xl cursor-pointer transition-all flex items-start gap-3 ${
-                    selectedMobility === option.id
-                      ? 'border-[#18D4C6] bg-blue-50'
-                      : 'border-gray-200'
-                  }`}
+                  className={`p-4 border-2 rounded-xl cursor-pointer transition-all flex items-start gap-3 ${selectedMobility === option.id
+                    ? 'border-[#18D4C6] bg-blue-50'
+                    : 'border-gray-200'
+                    }`}
                   onClick={() => setSelectedMobility(option.id)}
                 >
                   <div className="text-2xl shrink-0 mt-1">{option.icon}</div>

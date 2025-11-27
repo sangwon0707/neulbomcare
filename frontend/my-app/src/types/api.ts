@@ -25,11 +25,13 @@ export interface GuardianResponse {
 export interface DiseaseItem {
   id: string;
   name: string;
+  icon?: string;
 }
 
 export interface PatientCreateRequest {
   name: string;
-  age: number;
+  age?: number;
+  birth_date?: string;
   gender: 'Male' | 'Female';
   relationship: string;
 }

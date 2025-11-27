@@ -13,18 +13,19 @@ export function Header() {
         return null
     }
 
-    const isDashboard = pathname === "/dashboard"
+    // Home uses the transparent header style
+    const isTransparentHeader = pathname === "/home"
 
     return (
-        <header className={`z-50 w-full transition-colors duration-300 ${isDashboard
+        <header className={`z-50 w-full transition-colors duration-300 ${isTransparentHeader
             ? "fixed top-0 bg-transparent border-none"
             : "sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
             }`}>
             <div className="flex h-14 items-center justify-between px-4">
-                <Link href="/onboarding" className="flex items-center space-x-2">
+                <Link href="/home" className="flex items-center space-x-2">
                     {/* Logo Image */}
                     <Image
-                        src={isDashboard ? "/assets/logo_heart_white.png" : "/assets/logo_heart.png"}
+                        src={isTransparentHeader ? "/assets/logo_white.png" : "/assets/logo_color.png"}
                         alt="Neulbom Care"
                         width={32}
                         height={32}
@@ -33,7 +34,7 @@ export function Header() {
                 </Link>
 
                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className={`rounded-full ${isDashboard ? "hover:bg-white/20 text-white" : "hover:bg-gray-100/50 text-gray-600"}`}>
+                    <Button variant="ghost" size="icon" className={`rounded-full ${isTransparentHeader ? "hover:bg-white/20 text-white" : "hover:bg-gray-100/50 text-gray-600"}`}>
                         <Bell className="h-5 w-5" />
                     </Button>
                 </div>

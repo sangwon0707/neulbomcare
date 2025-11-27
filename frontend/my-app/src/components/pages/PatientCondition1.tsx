@@ -12,15 +12,20 @@ interface PatientCondition1Props {
 export default function PatientCondition1({ onNext, initialData = {}, onDataChange }: PatientCondition1Props) {
   const [formData, setFormData] = useState({
     name: initialData.name || '',
-    age: initialData.age || '',
+    birthDate: initialData.birthDate || '',
     gender: initialData.gender || 'female',
-    relationship: initialData.relationship || ''
+    relationship: initialData.relationship || '',
+    isDirectInput: false
   })
 
   const handleChange = (newData: any) => {
     const updated = { ...formData, ...newData }
     setFormData(updated)
     onDataChange?.(updated)
+  }
+
+  const toggleDirectInput = () => {
+    handleChange({ isDirectInput: !formData.isDirectInput, relationship: '' })
   }
 
   const styles = {
@@ -31,15 +36,7 @@ export default function PatientCondition1({ onNext, initialData = {}, onDataChan
       minHeight: 'calc(100vh - 64px - 80px)',
       paddingBottom: '100px'
     },
-    statusBar: {
-      height: '44px',
-      background: 'white',
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '0 20px',
-      fontSize: '12px'
-    },
+    // Status bar removed
     navBar: {
       display: 'flex',
       alignItems: 'center',
@@ -87,30 +84,13 @@ export default function PatientCondition1({ onNext, initialData = {}, onDataChan
       fontSize: '15px',
       color: '#000'
     },
-    avatarUpload: {
-      display: 'flex',
-      flexDirection: 'column' as const,
-      alignItems: 'center',
-      marginBottom: '30px'
-    },
-    avatarCircle: {
-      width: '100px',
-      height: '100px',
-      borderRadius: '50%',
-      background: background,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '48px',
-      marginBottom: '15px',
-      cursor: 'pointer',
-      border: `3px dashed ${firstPrimary}`
-    },
     formGroup: {
       marginBottom: '20px'
     },
     formLabel: {
-      display: 'block',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
       fontSize: '14px',
       fontWeight: 600,
       color: '#000',
@@ -181,24 +161,41 @@ export default function PatientCondition1({ onNext, initialData = {}, onDataChan
       fontSize: '17px',
       fontWeight: 600,
       cursor: 'pointer'
+    },
+    toggleSwitch: {
+      position: 'relative' as const,
+      width: '40px',
+      height: '24px',
+      background: formData.isDirectInput ? firstPrimary : '#ccc',
+      borderRadius: '12px',
+      cursor: 'pointer',
+      transition: 'background 0.3s'
+    },
+    toggleKnob: {
+      position: 'absolute' as const,
+      top: '2px',
+      left: formData.isDirectInput ? '18px' : '2px',
+      width: '20px',
+      height: '20px',
+      background: 'white',
+      borderRadius: '50%',
+      transition: 'left 0.3s',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.2)'
     }
   }
 
   return (
     <div style={styles.container}>
-      <div style={styles.statusBar}>
-        <span>9:41</span>
-        <span>●●●●</span>
-      </div>
+      {/* Status bar removed */}
 
       <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => {}}>‹</button>
+        <button style={styles.backBtn} onClick={() => { }}>‹</button>
         <div style={styles.progress}>
           <div style={styles.progressBar}>
             <div style={styles.progressFill}></div>
           </div>
         </div>
-        <div style={{fontSize: '14px', color: '#000', cursor: 'pointer'}}>건너뛰기</div>
+        <div style={{ fontSize: '14px', color: '#000', cursor: 'pointer' }}>건너뛰기</div>
       </div>
 
       <div style={styles.content}>
@@ -210,7 +207,7 @@ export default function PatientCondition1({ onNext, initialData = {}, onDataChan
         <form>
           <div style={styles.formGroup}>
             <label style={styles.formLabel}>
-              이름 <span style={styles.required}>*</span>
+              <span>이름 <span style={styles.required}>*</span></span>
             </label>
             <input
               type="text"
@@ -224,31 +221,30 @@ export default function PatientCondition1({ onNext, initialData = {}, onDataChan
 
           <div style={styles.formGroup}>
             <label style={styles.formLabel}>
-              나이 <span style={styles.required}>*</span>
+              <span>생년월일 <span style={styles.required}>*</span></span>
             </label>
             <input
-              type="number"
+              type="date"
               style={styles.formInput}
-              placeholder="예: 78"
-              value={formData.age}
-              onChange={(e) => handleChange({ age: e.target.value })}
+              value={formData.birthDate}
+              onChange={(e) => handleChange({ birthDate: e.target.value })}
               required
             />
           </div>
 
           <div style={styles.formGroup}>
             <label style={styles.formLabel}>
-              성별 <span style={styles.required}>*</span>
+              <span>성별 <span style={styles.required}>*</span></span>
             </label>
             <div style={styles.radioGroup}>
               <div
-                style={{...styles.radioOption, ...(formData.gender === 'female' ? styles.radioOptionSelected : {})}}
+                style={{ ...styles.radioOption, ...(formData.gender === 'female' ? styles.radioOptionSelected : {}) }}
                 onClick={() => handleChange({ gender: 'female' })}
               >
                 여성
               </div>
               <div
-                style={{...styles.radioOption, ...(formData.gender === 'male' ? styles.radioOptionSelected : {})}}
+                style={{ ...styles.radioOption, ...(formData.gender === 'male' ? styles.radioOptionSelected : {}) }}
                 onClick={() => handleChange({ gender: 'male' })}
               >
                 남성
@@ -258,22 +254,39 @@ export default function PatientCondition1({ onNext, initialData = {}, onDataChan
 
           <div style={styles.formGroup}>
             <label style={styles.formLabel}>
-              보호자와 관계 <span style={styles.required}>*</span>
+              <span>보호자와 관계 <span style={styles.required}>*</span></span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '12px', fontWeight: 'normal', color: '#666' }}>직접 입력</span>
+                <div style={styles.toggleSwitch} onClick={toggleDirectInput}>
+                  <div style={styles.toggleKnob}></div>
+                </div>
+              </div>
             </label>
             <div style={styles.selectWrapper}>
-              <select
-                style={styles.select}
-                value={formData.relationship}
-                onChange={(e) => handleChange({ relationship: e.target.value })}
-                required
-              >
-                <option value="">선택해주세요</option>
-                <option value="mother">어머니</option>
-                <option value="father">아버지</option>
-                <option value="spouse">배우자</option>
-                <option value="grandparent">조부모</option>
-                <option value="other">기타</option>
-              </select>
+              {formData.isDirectInput ? (
+                <input
+                  type="text"
+                  style={styles.formInput}
+                  placeholder="관계를 입력해주세요"
+                  value={formData.relationship}
+                  onChange={(e) => handleChange({ relationship: e.target.value })}
+                  required
+                />
+              ) : (
+                <select
+                  style={styles.select}
+                  value={formData.relationship}
+                  onChange={(e) => handleChange({ relationship: e.target.value })}
+                  required
+                >
+                  <option value="">선택해주세요</option>
+                  <option value="어머니">어머니</option>
+                  <option value="아버지">아버지</option>
+                  <option value="배우자">배우자</option>
+                  <option value="조부모">조부모</option>
+                  <option value="기타">기타</option>
+                </select>
+              )}
             </div>
           </div>
         </form>

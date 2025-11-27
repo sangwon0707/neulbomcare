@@ -1,15 +1,15 @@
 "use client"
 
-import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { background, firstPrimary, secondPrimary } from '../colors'
-import { apiGet } from '@/lib/api'
+import { apiGet } from '@/utils/api'
 import ErrorAlert from '@/components/ErrorAlert'
 import type { MatchingResponse, CaregiverMatch } from '@/types/api'
 
-export default function Screen7Matching() {
+export default function CaregiverResultList() {
   const router = useRouter()
-  const [flippedCards, setFlippedCards] = useState<{[key: string]: boolean}>({})
+  const [flippedCards, setFlippedCards] = useState<{ [key: string]: boolean }>({})
   const [matches, setMatches] = useState<CaregiverMatch[]>([])
   const [totalCount, setTotalCount] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -404,7 +404,7 @@ export default function Screen7Matching() {
                     <span style={styles.star}>⭐</span>
                     <span>{caregiver.avg_rating}</span>
                   </div>
-                  <div style={{marginTop: '8px'}}>
+                  <div style={{ marginTop: '8px' }}>
                     <span style={styles.certificationBadge}>{caregiver.grade}</span>
                   </div>
                   <div style={styles.experience}>경력 {caregiver.experience_years}년</div>
@@ -430,7 +430,7 @@ export default function Screen7Matching() {
                 <div style={styles.rate}>{caregiver.hourly_rate.toLocaleString()}원/시간</div>
                 <button style={styles.actionBtn}>프로필 보기</button>
                 <button
-                  style={{...styles.actionBtn, ...styles.actionBtnPrimary}}
+                  style={{ ...styles.actionBtn, ...styles.actionBtnPrimary }}
                   onClick={() => handleSelectCaregiver(caregiver)}
                 >
                   선택

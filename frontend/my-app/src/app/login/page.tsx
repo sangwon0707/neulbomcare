@@ -28,7 +28,7 @@ export default function LoginPage() {
 
             {/* KakaoTalk Login Button */}
             <div className="w-full max-w-sm">
-                <Link href="/welcome" className="w-full">
+                <Link href="/onboarding" className="w-full">
                     <Button
                         className="w-full h-14 bg-[#FEE500] hover:bg-[#FEE500]/90 text-[#000000] font-semibold rounded-xl flex items-center justify-center gap-3 shadow-lg"
                     >

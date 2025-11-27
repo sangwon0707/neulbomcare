@@ -1,15 +1,15 @@
-'use client'
+"use client"
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronLeft } from 'lucide-react'
-import { apiPost } from '@/lib/api'
+import { ChevronLeft, ChevronDown } from 'lucide-react'
+import { apiPost } from '@/utils/api'
 import ErrorAlert from '@/components/ErrorAlert'
-import type { GuardianCreateRequest, GuardianResponse } from '@/types/api'
+import type { GuardianResponse } from '@/types/api'
 
 export default function GuardiansPage() {
   const router = useRouter()
-  const [formData, setFormData] = useState<GuardianCreateRequest>({
+  const [formData, setFormData] = useState({
     name: '',
     phone: '',
     address: '',
@@ -70,7 +70,7 @@ export default function GuardiansPage() {
             <div className="flex-1 h-full bg-gray-200 rounded-sm"></div>
           </div>
         </div>
-        <div className="text-sm text-black cursor-pointer">건너뛰기</div>
+        <div className="w-8"></div> {/* Spacer to balance the header since Skip is removed */}
       </div>
 
       {/* Content */}
@@ -101,7 +101,7 @@ export default function GuardiansPage() {
               className="w-full px-4 py-4 border border-gray-200 rounded-xl text-base text-black bg-white"
               placeholder="예: 김영희"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
             />
           </div>
@@ -117,7 +117,7 @@ export default function GuardiansPage() {
               className="w-full px-4 py-4 border border-gray-200 rounded-xl text-base text-black bg-white"
               placeholder="예: 010-1234-5678"
               value={formData.phone}
-              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
               required
             />
           </div>
@@ -127,21 +127,26 @@ export default function GuardiansPage() {
             <label className="block text-sm font-semibold text-black mb-2">
               환자와의 관계 <span className="text-[#F2643B]">*</span>
             </label>
-            <select
-              name="relationship"
-              className="w-full px-4 py-4 border border-gray-200 rounded-xl text-base text-black bg-white appearance-none"
-              value={formData.relationship}
-              onChange={(e) => setFormData({...formData, relationship: e.target.value})}
-              required
-            >
-              <option value="">선택해주세요</option>
-              <option value="배우자">배우자</option>
-              <option value="자녀">자녀</option>
-              <option value="부모">부모</option>
-              <option value="형제자매">형제자매</option>
-              <option value="손자/손녀">손자/손녀</option>
-              <option value="기타">기타</option>
-            </select>
+            <div className="relative">
+              <select
+                name="relationship"
+                className="w-full px-4 py-4 border border-gray-200 rounded-xl text-base text-black bg-white appearance-none pr-10"
+                value={formData.relationship}
+                onChange={(e) => setFormData({ ...formData, relationship: e.target.value })}
+                required
+              >
+                <option value="">선택해주세요</option>
+                <option value="배우자">배우자</option>
+                <option value="자녀">자녀</option>
+                <option value="부모">부모</option>
+                <option value="형제자매">형제자매</option>
+                <option value="손자/손녀">손자/손녀</option>
+                <option value="기타">기타</option>
+              </select>
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                <ChevronDown className="w-5 h-5" />
+              </div>
+            </div>
           </div>
 
           {/* Address */}
@@ -155,7 +160,7 @@ export default function GuardiansPage() {
               className="w-full px-4 py-4 border border-gray-200 rounded-xl text-base text-black bg-white"
               placeholder="예: 서울특별시 서초구 반포대로 222"
               value={formData.address}
-              onChange={(e) => setFormData({...formData, address: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, address: e.target.value })}
               required
             />
           </div>

@@ -8,15 +8,17 @@ import { cn } from "@/utils/cn"
 export function BottomNav() {
     const pathname = usePathname()
 
-    if (pathname === "/" || pathname === "/onboarding" || pathname === "/personality-test" || pathname === "/login" || pathname === "/welcome" || pathname === "/guardians" || pathname === "/patient-condition" || pathname === "/caregiver-finder" || pathname === "/care-plans-create" || pathname === "/mypage" || pathname === "/caregiver-results") {
+    // Hide on onboarding, login, welcome, and specific sub-pages where nav might distract
+    // Show on main tabs: /home, /caregiver-finder, /schedule, /mypage
+    if (pathname === "/" || pathname === "/onboarding" || pathname === "/personality-test" || pathname === "/login" || pathname === "/welcome") {
         return null
     }
 
     const navItems = [
         { href: "/home", label: "홈", icon: Home },
-        { href: "/matching", label: "매칭", icon: Search },
+        { href: "/caregiver-finder", label: "매칭", icon: Search },
         { href: "/schedule", label: "일정", icon: Calendar },
-        { href: "/dashboard", label: "내 정보", icon: User },
+        { href: "/mypage", label: "내 정보", icon: User },
     ]
 
     return (

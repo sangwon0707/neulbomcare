@@ -12,7 +12,7 @@ export default function PatientConditionPage() {
   const [formData, setFormData] = useState({
     // Step 1 data
     name: '',
-    age: '',
+    birthDate: '',
     gender: 'female',
     relationship: '',
     // Step 2 data

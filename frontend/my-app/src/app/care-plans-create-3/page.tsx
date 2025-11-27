@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { background, firstPrimary } from '../colors'
-import { apiPost } from '@/lib/api'
+import { apiPost } from '@/utils/api'
 import ErrorAlert from '@/components/ErrorAlert'
 import type { ReviewCreateRequest, ReviewResponse } from '@/types/api'
 
@@ -273,7 +273,7 @@ export default function Screen10CaregiverReview() {
       <div style={styles.navBar}>
         <button style={styles.backBtn} onClick={() => router.push('/care-plans-create-2')}>‹</button>
         <div style={styles.navTitle}>케어 플랜 검토</div>
-        <div style={{width: '20px'}}></div>
+        <div style={{ width: '20px' }}></div>
       </div>
 
       <div style={styles.patientCard}>
@@ -375,7 +375,7 @@ export default function Screen10CaregiverReview() {
                 </label>
               </div>
 
-              <h4 style={{...styles.feedbackDetailH4, marginTop: '12px'}}>제안사항</h4>
+              <h4 style={{ ...styles.feedbackDetailH4, marginTop: '12px' }}>제안사항</h4>
               <textarea
                 style={styles.textarea}
                 placeholder="상세한 의견을 작성해주세요..."
@@ -383,7 +383,7 @@ export default function Screen10CaregiverReview() {
                 onChange={(e) => setSuggestion(e.target.value)}
               />
 
-              <h4 style={{...styles.feedbackDetailH4, marginTop: '12px'}}>대안 시간 제안</h4>
+              <h4 style={{ ...styles.feedbackDetailH4, marginTop: '12px' }}>대안 시간 제안</h4>
               <div style={styles.timeSuggest}>
                 <input
                   type="time"
@@ -391,7 +391,7 @@ export default function Screen10CaregiverReview() {
                   value={alternativeTime}
                   onChange={(e) => setAlternativeTime(e.target.value)}
                 />
-                <span style={{fontSize: '13px', color: 'black'}}>(식사 30분 후)</span>
+                <span style={{ fontSize: '13px', color: 'black' }}>(식사 30분 후)</span>
               </div>
             </div>
           )}
@@ -417,7 +417,7 @@ export default function Screen10CaregiverReview() {
         <div style={styles.overallFeedback}>
           <h3 style={styles.overallFeedbackH3}>전체 일정에 대한 종합 의견</h3>
           <textarea
-            style={{...styles.textarea, minHeight: '100px'}}
+            style={{ ...styles.textarea, minHeight: '100px' }}
             placeholder="전반적인 의견을 작성해주세요..."
             value={overallFeedback}
             onChange={(e) => setOverallFeedback(e.target.value)}
@@ -426,7 +426,7 @@ export default function Screen10CaregiverReview() {
       </div>
 
       <div style={styles.bottomBar}>
-        <button style={{...styles.btn, ...styles.btnSecondary}}>임시 저장</button>
+        <button style={{ ...styles.btn, ...styles.btnSecondary }}>임시 저장</button>
         <button
           style={{
             ...styles.btn,
