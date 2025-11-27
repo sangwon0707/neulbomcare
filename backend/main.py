@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
 from app.core.database import engine, Base
-from app.routes import auth, profile, matching, care_execution, review
+from app.routes import auth, profile, matching, care_execution, review, guardians, patients, dashboard
 
 settings = get_settings()
 
@@ -27,9 +27,12 @@ app.include_router(profile.router, prefix="/api")
 app.include_router(matching.router, prefix="/api")
 app.include_router(care_execution.router, prefix="/api")
 app.include_router(review.router, prefix="/api")
+# 새로운 프론트엔드 API 라우터
+app.include_router(guardians.router)
+app.include_router(patients.router)
+app.include_router(dashboard.router)
 
 
-# 테이블이 이미 존재하므로 자동 생성 비활성화
 # @app.on_event("startup")
 # def startup_event():
 #     """애플리케이션 시작 시 데이터베이스 테이블 생성"""
