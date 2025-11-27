@@ -124,12 +124,23 @@ async def kakao_callback(code: str, db: Session = Depends(get_db)):
         db.refresh(user)
     
     # 5. JWT 토큰 생성
-    jwt_token = create_access_token(data={"sub": str(user.id)})
+    jwt_token = create_access_token(data={"sub": str(user.user_id)})
     
     # 6. 프론트엔드로 리디렉션 (토큰 포함)
     frontend_redirect_url = f"{settings.FRONTEND_URL}/auth/callback?token={jwt_token}"
     
-    return RedirectResponse(url=frontend_redirect_url)
+    # 7. HttpOnly 쿠키에 JWT 토큰 저장 (세션 방식처럼 동작)
+    response = RedirectResponse(url=frontend_redirect_url)
+    response.set_cookie(
+        key="access_token",
+        value=jwt_token,
+        httponly=True,  # XSS 공격 방지
+        secure=True,    # HTTPS only (프로덕션)
+        samesite="lax", # CSRF 공격 방지
+        max_age=60 * 60 * 24 * 7  # 7일
+    )
+    
+    return response
 
 
 @router.get("/me", response_model=UserResponse)
