@@ -42,6 +42,45 @@ def create_new_review(
     current_user: User = Depends(get_current_user)
 ):
     """새 리뷰 생성 (인증 필요)"""
+    
+    # 1. 매칭 결과 확인
+    from app.models.matching import MatchingResult
+    matching = db.query(MatchingResult).filter(
+        MatchingResult.matching_id == payload.matching_id
+    ).first()
+    
+    if not matching:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Matching result not found"
+        )
+        
+    # 2. 권한 확인 (환자의 보호자만 리뷰 작성 가능)
+    from app.models.profile import Patient, Guardian
+    patient = db.query(Patient).join(Guardian).filter(
+        Patient.patient_id == matching.patient_id,
+        Guardian.user_id == current_user.user_id
+    ).first()
+    
+    if not patient:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to review this match (Only the patient's guardian can review)"
+        )
+        
+    # 3. 중복 리뷰 확인
+    from app.models.review import Review
+    existing_review = db.query(Review).filter(
+        Review.matching_id == payload.matching_id,
+        Review.reviewer_id == current_user.user_id
+    ).first()
+    
+    if existing_review:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="You have already reviewed this match"
+        )
+
     # reviewer_type은 user_type에서 가져옴
     reviewer_type = current_user.user_type.value
     return create_review(db, payload, current_user.user_id, reviewer_type)
