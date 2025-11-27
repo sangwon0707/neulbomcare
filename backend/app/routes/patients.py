@@ -2,15 +2,17 @@
 Patient API (프론트엔드 계약용)
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
-from datetime import date
+from datetime import date, datetime, timedelta
 
 from app.dependencies.database import get_db
 from app.dependencies.auth import get_current_user
 from app.models.user import User
-from app.models.profile import Guardian, Patient
+from app.models.profile import Guardian, Patient, Caregiver
 from app.models.care_details import HealthCondition, Medication
+from app.models.care_execution import Schedule, MealPlan
+from app.models.matching import MatchingResult, MatchingRequest
 from app.schemas.patient import (
     PatientCreateRequest,
     PatientInfoResponse,
@@ -18,6 +20,8 @@ from app.schemas.patient import (
     MedicationsCreateRequest,
     MedicationInfoResponse
 )
+from app.schemas.matching import MatchingResultResponse
+from typing import List, Optional
 
 router = APIRouter(prefix="/api", tags=["Patients"])
 
@@ -194,3 +198,133 @@ async def create_medications(
         med_id=medication.med_id,
         medicine_names=request.medicine_names
     )
+
+
+@router.get("/patients/{patient_id}/matching-results", response_model=List[MatchingResultResponse])
+async def get_matching_results(
+    patient_id: int,
+    status: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    환자의 매칭 결과 조회
+    
+    Query Parameters:
+    - status: 매칭 상태 필터 (recommended, selected, active, completed, cancelled)
+    """
+    # 1. 환자 접근 권한 확인
+    patient = db.query(Patient).join(Guardian).filter(
+        Patient.patient_id == patient_id,
+        Guardian.user_id == current_user.user_id
+    ).first()
+    
+    if not patient:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="이 환자에 대한 접근 권한이 없습니다"
+        )
+    
+    # 2. 매칭 결과 조회
+    # matching_results 테이블과 matching_requests 테이블 조인
+    query = db.query(MatchingResult).join(
+        MatchingRequest,
+        MatchingResult.request_id == MatchingRequest.request_id
+    ).filter(
+        MatchingRequest.patient_id == patient_id
+    )
+    
+    # 3. status 필터링 (선택사항)
+    if status:
+        from app.models.matching import MatchingStatusEnum
+        try:
+            status_enum = MatchingStatusEnum(status)
+            query = query.filter(MatchingResult.status == status_enum)
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid status value. Must be one of: recommended, selected, active, completed, cancelled"
+            )
+    
+    # 4. 점수 순으로 정렬하여 조회
+    results = query.order_by(MatchingResult.total_score.desc()).all()
+    
+    # 5. 응답 반환
+    return [MatchingResultResponse.model_validate(result) for result in results]
+
+
+@router.get("/patients/{patient_id}/care-plans")
+async def get_care_plans(
+    patient_id: int,
+    type: str = Query("weekly", pattern="^(weekly|monthly)$"),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    케어 플랜 일정 조회 (schedules + meal_plans)
+    
+    Query Parameters:
+    - type: weekly (7일) 또는 monthly (30일)
+    """
+    # 1. 환자 접근 권한 확인
+    patient = db.query(Patient).join(Guardian).filter(
+        Patient.patient_id == patient_id,
+        Guardian.user_id == current_user.user_id
+    ).first()
+    
+    if not patient:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="이 환자에 대한 접근 권한이 없습니다"
+        )
+    
+    # 2. 기간 설정
+    start_date = date.today()
+    if type == "weekly":
+        end_date = start_date + timedelta(days=7)
+    else:  # monthly
+        end_date = start_date + timedelta(days=30)
+    
+    # 3. 일정 조회
+    schedules = db.query(Schedule).filter(
+        Schedule.patient_id == patient_id,
+        Schedule.care_date >= start_date,
+        Schedule.care_date < end_date
+    ).order_by(Schedule.care_date).all()
+    
+    # 4. 식단 조회
+    meal_plans = db.query(MealPlan).filter(
+        MealPlan.patient_id == patient_id,
+        MealPlan.meal_date >= start_date,
+        MealPlan.meal_date < end_date
+    ).order_by(MealPlan.meal_date, MealPlan.meal_type).all()
+    
+    # 5. 응답 반환
+    return {
+        "type": type,
+        "start_date": start_date.isoformat(),
+        "end_date": end_date.isoformat(),
+        "schedules": [
+            {
+                "schedule_id": s.schedule_id,
+                "care_date": s.care_date.isoformat(),
+                "status": s.status,
+                "is_ai_generated": s.is_ai_generated,
+                "created_at": s.created_at.isoformat()
+            }
+            for s in schedules
+        ],
+        "meal_plans": [
+            {
+                "plan_id": m.plan_id,
+                "meal_date": m.meal_date.isoformat(),
+                "meal_type": m.meal_type.value,
+                "menu_name": m.menu_name,
+                "ingredients": m.ingredients,
+                "nutrition_info": m.nutrition_info,
+                "cooking_tips": m.cooking_tips
+            }
+            for m in meal_plans
+        ]
+    }
+

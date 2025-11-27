@@ -5,7 +5,7 @@ User & Authentication Pydantic 스키마
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
-from app.models.user import UserTypeEnum, SocialProviderEnum
+from app.models.user import UserTypeEnum, SocialProviderEnum, UserGenderEnum
 
 
 # ============================================================================
@@ -19,6 +19,7 @@ class UserBase(BaseModel):
     phone_number: Optional[str] = Field(None, max_length=20)
     user_type: UserTypeEnum
     profile_image_url: Optional[str] = None
+    gender: Optional[UserGenderEnum] = None
 
 
 class UserCreate(UserBase):
@@ -32,6 +33,7 @@ class UserUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=50)
     phone_number: Optional[str] = Field(None, max_length=20)
     profile_image_url: Optional[str] = None
+    gender: Optional[UserGenderEnum] = None
 
 
 class UserResponse(UserBase):

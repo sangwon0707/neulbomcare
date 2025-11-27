@@ -31,6 +31,9 @@ CREATE TYPE user_type_enum AS ENUM ('guardian', 'caregiver');
 -- 성별
 CREATE TYPE gender_enum AS ENUM ('Male', 'Female');
 
+-- 사용자 성별 (users 테이블용)
+CREATE TYPE user_gender_enum AS ENUM ('Male', 'Female');
+
 -- 소셜 로그인 제공자
 CREATE TYPE social_provider_enum AS ENUM ('kakao', 'naver', 'google', 'apple');
 
@@ -90,6 +93,8 @@ CREATE TABLE users (
     user_type user_type_enum NOT NULL,
     profile_image_url TEXT,
 
+    gender user_gender_enum,
+
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
@@ -102,6 +107,7 @@ CREATE TABLE users (
 CREATE INDEX idx_users_email ON users(email) WHERE email IS NOT NULL;
 CREATE INDEX idx_users_phone ON users(phone_number) WHERE phone_number IS NOT NULL;
 CREATE INDEX idx_users_type ON users(user_type);
+CREATE INDEX idx_users_gender ON users(gender);
 CREATE INDEX idx_users_active ON users(is_active) WHERE is_active = TRUE;
 
 COMMENT ON TABLE users IS '통합 사용자 테이블 (보호자 + 간병인)';

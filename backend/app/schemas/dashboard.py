@@ -2,8 +2,10 @@
 Dashboard Pydantic 스키마 (마이페이지)
 """
 
+from datetime import datetime
 from typing import Optional, List
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
+from app.models.user import UserTypeEnum, UserGenderEnum
 
 
 class DashboardUserInfo(BaseModel):

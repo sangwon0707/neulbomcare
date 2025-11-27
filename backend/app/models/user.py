@@ -25,6 +25,12 @@ class SocialProviderEnum(str, enum.Enum):
     apple = "apple"
 
 
+class UserGenderEnum(str, enum.Enum):
+    """사용자 성별"""
+    Male = "Male"
+    Female = "Female"
+
+
 class User(Base):
     """통합 사용자 모델 (보호자 + 간병인)"""
     
@@ -43,6 +49,9 @@ class User(Base):
     # 사용자 유형
     user_type = Column(SQLEnum(UserTypeEnum, name="user_type_enum"), nullable=False)
     profile_image_url = Column(String, nullable=True)
+    
+    # 성별 (간병인 매칭 필터링용)
+    gender = Column(SQLEnum(UserGenderEnum, name="user_gender_enum"), nullable=True)
     
     # 상태
     is_active = Column(Boolean, default=True)
