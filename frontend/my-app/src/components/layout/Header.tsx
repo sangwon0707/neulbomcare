@@ -20,7 +20,7 @@ export function Header() {
             ? "fixed top-0 bg-transparent border-none"
             : "sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
             }`}>
-            <div className="flex h-14 items-center justify-between px-4">
+            <div className="flex h-14 items-center justify-between px-4 bg-background">
                 <Link href="/onboarding" className="flex items-center space-x-2">
                     {/* Logo Image */}
                     <Image

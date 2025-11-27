@@ -5,6 +5,7 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import { firstPrimary } from "./colors"
 
 export default function RootPage() {
     return (
@@ -50,11 +51,13 @@ export default function RootPage() {
                     transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
                     className="w-full max-w-[300px] space-y-4"
                 >
-                    <Button asChild size="lg" className="w-full h-14 text-lg font-bold rounded-2xl shadow-lg shadow-primary/20 bg-gradient-to-r from-primary to-teal-400 hover:opacity-90 transition-opacity border-none">
-                        <Link href="/personality-test">
-                            시작하기 <ArrowRight className="ml-2 w-5 h-5" />
-                        </Link>
-                    </Button>
+                    <Link
+                        href="/personality-test"
+                        className="inline-flex items-center justify-center w-full h-14 text-lg font-bold rounded-2xl shadow-lg hover:opacity-90 transition-opacity border-none text-white"
+                        style={{ background: firstPrimary }}
+                    >
+                        시작하기 <ArrowRight className="ml-2 w-5 h-5" />
+                    </Link>
 
                     <Button asChild variant="ghost" className="w-full text-gray-400 hover:text-gray-600 hover:bg-transparent">
                         <Link href="/home">

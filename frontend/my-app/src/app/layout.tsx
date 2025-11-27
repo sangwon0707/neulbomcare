@@ -29,6 +29,7 @@ export default function RootLayout({
           "min-h-screen bg-gray-100 font-sans antialiased flex justify-center",
           notoSansKr.variable
         )}
+        suppressHydrationWarning
       >
         <div className="w-full max-w-[430px] min-h-screen bg-background relative shadow-2xl flex flex-col">
           <Header />
