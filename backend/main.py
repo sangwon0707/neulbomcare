@@ -31,6 +31,8 @@ app.include_router(review.router, prefix="/api")
 app.include_router(guardians.router)
 app.include_router(patients.router)
 app.include_router(dashboard.router)
+from app.routes import personality
+app.include_router(personality.router, prefix="/api")
 
 
 # @app.on_event("startup")

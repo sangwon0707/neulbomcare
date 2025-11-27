@@ -15,6 +15,12 @@ class PersonalityScoreBase(BaseModel):
     independence_score: float = Field(..., ge=0, le=100)
 
 
+class PersonalityTestRequest(BaseModel):
+    """성향 테스트 요청 스키마 (AI 분석용)"""
+    user_type: str = Field(..., pattern="^(guardian|caregiver)$")
+    answers: dict = Field(..., description="질문 ID와 답변의 매핑")
+
+
 # ============================================================================
 # Patient Personality Schemas
 # ============================================================================

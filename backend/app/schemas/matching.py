@@ -54,6 +54,28 @@ class MatchingRequestBase(BaseModel):
     additional_request: Optional[str] = None
 
 
+# ============================================================================
+# New Matching API Schemas (AI-based matching)
+# ============================================================================
+
+from app.models.user import UserGenderEnum
+
+class MatchingRequirements(BaseModel):
+    """매칭 요구사항 스키마 (AI 매칭용)"""
+    care_type: str = Field(..., description="간병 유형: time, live-in")
+    time_slots: Optional[List[str]] = Field(None, description="시간대: morning, afternoon, evening, night")
+    gender: Optional[UserGenderEnum] = Field(None, description="선호 성별")
+    experience: Optional[str] = Field(None, description="경력: 0-1, 1-3, 3-5, 5plus")
+    skills: Optional[List[str]] = Field(None, description="필요 스킬: suction, tube_feeding, etc")
+
+
+class MatchingRequestCreateAI(BaseModel):
+    """AI 매칭 요청 생성 스키마"""
+    patient_id: int
+    requirements: MatchingRequirements
+
+
+
 class MatchingRequestCreate(MatchingRequestBase):
     """매칭 요청 생성 스키마"""
     patient_id: int
