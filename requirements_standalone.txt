@@ -1,0 +1,19 @@
+# 약봉지 OCR 독립 테스트 서버 - 필수 패키지
+
+# FastAPI
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6  # 파일 업로드용
+
+# Azure OCR
+azure-ai-formrecognizer==3.3.0
+azure-core==1.29.0
+
+# 식약처 API 호출
+requests==2.31.0
+
+# 환경 변수 관리
+python-dotenv==1.0.0
+
+# Pydantic (FastAPI 의존성, 명시적 표기)
+pydantic==2.5.0
