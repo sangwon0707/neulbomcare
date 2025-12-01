@@ -24,15 +24,15 @@ export default function CarePlanCreate2({ onNext, onPrev, initialData = {}, onDa
   const firstDayActivities = (weeklySchedule && weeklySchedule.length > 0)
     ? weeklySchedule[0]?.activities || []
     : [
-        { time: '07:00', title: '기상 도움', assignee: '👨‍⚕️ 간병인' },
-        { time: '07:30', title: '아침 식사 준비', assignee: '👩 가족' },
-        { time: '08:00', title: '약 복용 확인', assignee: '👨‍⚕️ 간병인', note: '⚠️ 정해진 약물' },
-        { time: '09:00', title: '가벼운 스트레칭', assignee: '👨‍⚕️ 간병인' },
-        { time: '10:00', title: '산책 (날씨 좋을 시)', assignee: '👩 가족' },
-        { time: '12:00', title: '점심 식사 준비', assignee: '👨‍⚕️ 간병인' }
-      ]
+      { time: '07:00', title: '기상 도움', assignee: '👨‍⚕️ 간병인' },
+      { time: '07:30', title: '아침 식사 준비', assignee: '👩 가족' },
+      { time: '08:00', title: '약 복용 확인', assignee: '👨‍⚕️ 간병인', note: '⚠️ 정해진 약물' },
+      { time: '09:00', title: '가벼운 스트레칭', assignee: '👨‍⚕️ 간병인' },
+      { time: '10:00', title: '산책 (날씨 좋을 시)', assignee: '👩 가족' },
+      { time: '12:00', title: '점심 식사 준비', assignee: '👨‍⚕️ 간병인' }
+    ]
 
-  const activities = firstDayActivities as Array<{time: string; title: string; assignee: string; note?: string}>
+  const activities = firstDayActivities as Array<{ time: string; title: string; assignee: string; note?: string }>
 
   const styles = {
     container: {
@@ -239,13 +239,13 @@ export default function CarePlanCreate2({ onNext, onPrev, initialData = {}, onDa
       <div style={styles.content}>
         <div style={styles.tabBar}>
           <button
-            style={{...styles.tab, ...(activeTab === 'weekly' ? styles.tabActive : {})}}
+            style={{ ...styles.tab, ...(activeTab === 'weekly' ? styles.tabActive : {}) }}
             onClick={() => setActiveTab('weekly')}
           >
             주간
           </button>
           <button
-            style={{...styles.tab, ...(activeTab === 'monthly' ? styles.tabActive : {})}}
+            style={{ ...styles.tab, ...(activeTab === 'monthly' ? styles.tabActive : {}) }}
             onClick={() => setActiveTab('monthly')}
           >
             월간
@@ -272,13 +272,13 @@ export default function CarePlanCreate2({ onNext, onPrev, initialData = {}, onDa
         <div style={styles.reviewCard}>
           <h3 style={styles.reviewCardH3}>💼 전문가 의견을 들어보세요</h3>
           <p style={styles.reviewCardP}>간병인 {caregiverName}님께 이 일정에 대한 검토를 요청하시겠어요?</p>
-          <p style={{...styles.reviewCardP, fontSize: '13px', opacity: 0.9}}>
+          <p style={{ ...styles.reviewCardP, fontSize: '13px', opacity: 0.9 }}>
             전문가의 현장 경험이 더해지면 더 실용적인 케어 플랜이 됩니다.
           </p>
           <div style={styles.reviewButtons}>
-            <button style={{...styles.btn, ...styles.btnOutline}} onClick={onNext}>나중에</button>
+            <button style={{ ...styles.btn, ...styles.btnOutline }} onClick={onNext}>나중에</button>
             <button
-              style={{...styles.btn, ...styles.btnPrimary}}
+              style={{ ...styles.btn, ...styles.btnPrimary }}
               onClick={onNext}
             >
               리뷰 요청하기
@@ -288,9 +288,9 @@ export default function CarePlanCreate2({ onNext, onPrev, initialData = {}, onDa
       </div>
 
       <div style={styles.bottomBar}>
-        <button style={{...styles.btn, ...styles.btnSecondary}} onClick={onPrev}>이전</button>
+        <button style={{ ...styles.btn, ...styles.btnSecondary }} onClick={onPrev}>이전</button>
         <button
-          style={{...styles.btn, ...styles.btnAction}}
+          style={{ ...styles.btn, ...styles.btnAction }}
           onClick={onNext}
         >
           다음

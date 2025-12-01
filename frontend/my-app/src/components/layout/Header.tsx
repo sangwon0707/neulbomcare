@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 export function Header() {
     const pathname = usePathname()
 
-    if (pathname === "/onboarding" || pathname === "/personality-test" || pathname === "/login" || pathname === "/welcome" || pathname === "/schedule") {
+    if (pathname === "/onboarding" || pathname === "/personality-test" || pathname === "/login" || pathname === "/welcome" || pathname === "/schedule" || pathname === "/guardians" || pathname === "/patient-condition-1" || pathname === "/patient-condition-2" || pathname === "/patient-condition-3" || pathname === "/caregiver-finder" || pathname === "/caregiver-result-loading" || pathname === "/caregiver-result-2") {
         return null
     }
 

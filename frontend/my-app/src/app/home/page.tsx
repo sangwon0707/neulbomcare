@@ -91,13 +91,13 @@ export default function HomePage() {
         {/* Main Actions */}
         <div className="grid grid-cols-2 gap-4">
           {/* My Caregiver */}
-          <button className="bg-[#18d4c6] rounded-[20px] p-5 h-[160px] flex flex-col justify-between shadow-md relative overflow-hidden group">
+          <button onClick={() => router.push('/initialize')} className="bg-[#18d4c6] rounded-[20px] p-5 h-[160px] flex flex-col justify-between shadow-md relative overflow-hidden group">
             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
               <Search className="w-6 h-6 text-[#18d4c6]" />
             </div>
             <div className="text-left relative z-10">
-              <p className="text-lg font-bold text-white leading-tight">나의 간병인</p>
-              <p className="text-xs text-white/80 mt-1">관리하기</p>
+              <p className="text-lg font-bold text-white leading-tight">간병인 찾기</p>
+              <p className="text-xs text-white/80 mt-1">새로운 매칭 시작</p>
             </div>
           </button>
 

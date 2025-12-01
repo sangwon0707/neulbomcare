@@ -323,108 +323,108 @@ export default function MyMatchingConfirmedPage() {
       </style>
       <div style={styles.container}>
         <div style={styles.navBar}>
-        <button style={styles.backBtn} onClick={() => router.back()}>←</button>
-        <div style={styles.navTitle}>매칭 확인</div>
-        <div style={{width: '20px'}}></div>
-      </div>
+          <button style={styles.backBtn} onClick={() => router.back()}>←</button>
+          <div style={styles.navTitle}>매칭 확인</div>
+          <div style={{ width: '20px' }}></div>
+        </div>
 
-      <div style={styles.content}>
-        {/* Matched Banner - Toast Notification */}
-        {showBanner && (
-          <div style={styles.matchedBanner}>
-            <div style={styles.bannerContent}>
-              <div style={styles.matchedIcon}>✅</div>
-              <div style={styles.matchedTitle}>매칭되었습니다!</div>
-              <div style={styles.matchedDesc}>간병인과의 관계가 시작되었습니다</div>
+        <div style={styles.content}>
+          {/* Matched Banner - Toast Notification */}
+          {showBanner && (
+            <div style={styles.matchedBanner}>
+              <div style={styles.bannerContent}>
+                <div style={styles.matchedIcon}>✅</div>
+                <div style={styles.matchedTitle}>매칭되었습니다!</div>
+                <div style={styles.matchedDesc}>간병인과의 관계가 시작되었습니다</div>
+              </div>
+              <button
+                style={styles.bannerCloseBtn}
+                onClick={() => setShowBanner(false)}
+              >
+                ✕
+              </button>
             </div>
-            <button
-              style={styles.bannerCloseBtn}
-              onClick={() => setShowBanner(false)}
-            >
-              ✕
-            </button>
-          </div>
-        )}
+          )}
 
-        {/* Add padding to content when banner is shown */}
-        <div style={{paddingTop: showBanner ? '140px' : '0'}}></div>
+          {/* Add padding to content when banner is shown */}
+          <div style={{ paddingTop: showBanner ? '140px' : '0' }}></div>
 
-        {/* Caregiver Card */}
-        {caregiver && (
-          <div style={styles.caregiverCard}>
-            <div style={styles.caregiverHeader}>
-              <div style={styles.caregiverAvatar}>{caregiver.avatar || caregiver.profile_image_url || '👨‍⚕️'}</div>
-              <div style={styles.caregiverInfo}>
-                <div style={styles.caregiverName}>{caregiver.name || caregiver.caregiver_name}</div>
-                <div style={styles.caregiverMeta}>
-                  <span style={styles.rating}>⭐ {caregiver.rating || caregiver.avg_rating || 4.5}</span>
-                  <span style={{color: '#999'}}>({caregiver.reviews || 0}건)</span>
+          {/* Caregiver Card */}
+          {caregiver && (
+            <div style={styles.caregiverCard}>
+              <div style={styles.caregiverHeader}>
+                <div style={styles.caregiverAvatar}>{caregiver.avatar || caregiver.profile_image_url || '👨‍⚕️'}</div>
+                <div style={styles.caregiverInfo}>
+                  <div style={styles.caregiverName}>{caregiver.name || caregiver.caregiver_name}</div>
+                  <div style={styles.caregiverMeta}>
+                    <span style={styles.rating}>⭐ {caregiver.rating || caregiver.avg_rating || 4.5}</span>
+                    <span style={{ color: '#999' }}>({caregiver.reviews || 0}건)</span>
+                  </div>
+                  <span style={styles.certBadge}>{caregiver.certification || caregiver.job_title || '요양보호사'}</span>
+                  <div style={styles.experienceText}>{caregiver.experience || `경력 ${caregiver.experience_years || 0}년`}</div>
                 </div>
-                <span style={styles.certBadge}>{caregiver.certification || caregiver.job_title || '요양보호사'}</span>
-                <div style={styles.experienceText}>{caregiver.experience || `경력 ${caregiver.experience_years || 0}년`}</div>
+              </div>
+
+              <div style={styles.caregiverBody}>
+                <div style={styles.intro}>&ldquo;{caregiver.intro || '친절하고 성실한 간병을 제공하겠습니다.'}&rdquo;</div>
+                <div style={styles.specialties}>
+                  {(caregiver.specialties && caregiver.specialties.length > 0) ? (
+                    caregiver.specialties.map((specialty, i) => (
+                      <span key={i} style={styles.specialtyTag}>{specialty}</span>
+                    ))
+                  ) : (
+                    <span style={styles.specialtyTag}>기본 돌봄</span>
+                  )}
+                </div>
+              </div>
+
+              <div style={styles.matchScore}>
+                <div style={styles.matchScoreValue}>{caregiver.matchScore || caregiver.match_score || 0}%</div>
+                <div style={styles.matchScoreLabel}>매칭 일치도</div>
+              </div>
+
+              <div style={styles.rateInfo}>
+                <span style={styles.rateLabel}>시간당 요금</span>
+                <span style={styles.rateValue}>
+                  {(caregiver.rate || caregiver.hourly_rate || 0) > 0
+                    ? `${(caregiver.rate || caregiver.hourly_rate).toLocaleString()}원`
+                    : '문의'}
+                </span>
               </div>
             </div>
+          )}
 
-            <div style={styles.caregiverBody}>
-              <div style={styles.intro}>&ldquo;{caregiver.intro || '친절하고 성실한 간병을 제공하겠습니다.'}&rdquo;</div>
-              <div style={styles.specialties}>
-                {(caregiver.specialties && caregiver.specialties.length > 0) ? (
-                  caregiver.specialties.map((specialty, i) => (
-                    <span key={i} style={styles.specialtyTag}>{specialty}</span>
-                  ))
-                ) : (
-                  <span style={styles.specialtyTag}>기본 돌봄</span>
-                )}
-              </div>
-            </div>
-
-            <div style={styles.matchScore}>
-              <div style={styles.matchScoreValue}>{caregiver.matchScore || caregiver.match_score || 0}%</div>
-              <div style={styles.matchScoreLabel}>매칭 일치도</div>
-            </div>
-
-            <div style={styles.rateInfo}>
-              <span style={styles.rateLabel}>시간당 요금</span>
-              <span style={styles.rateValue}>
-                {(caregiver.rate || caregiver.hourly_rate || 0) > 0
-                  ? `${(caregiver.rate || caregiver.hourly_rate).toLocaleString()}원`
-                  : '문의'}
-              </span>
+          {/* Action Section */}
+          <div style={styles.actionSection}>
+            <div style={styles.sectionTitle}>다음 단계</div>
+            <div style={styles.actionButtons}>
+              <button
+                style={{ ...styles.actionBtn, ...styles.actionBtnPrimary }}
+                onClick={() => router.push('/care-plans-create')}
+              >
+                <span>📅</span>
+                AI 맞춤 케어 일정 만들기
+              </button>
+              <button
+                style={{ ...styles.actionBtn, ...styles.actionBtnSecondary }}
+                onClick={() => router.push('/mypage-message')}
+              >
+                <span>💬</span>
+                간병인과 채팅하기
+              </button>
             </div>
           </div>
-        )}
 
-        {/* Action Section */}
-        <div style={styles.actionSection}>
-          <div style={styles.sectionTitle}>다음 단계</div>
-          <div style={styles.actionButtons}>
-            <button
-              style={{...styles.actionBtn, ...styles.actionBtnPrimary}}
-              onClick={() => router.push('/care-plans-create')}
-            >
-              <span>📅</span>
-              AI 맞춤 케어 일정 만들기
-            </button>
-            <button
-              style={{...styles.actionBtn, ...styles.actionBtnSecondary}}
-              onClick={() => router.push('/mypage')}
-            >
-              <span>💬</span>
-              간병인과 채팅하기
-            </button>
+          {/* Info Card */}
+          <div style={styles.infoCard}>
+            <div style={styles.infoCardTitle}>📋 매칭 후 절차</div>
+            <div style={styles.infoBullet}>1️⃣ 간병인과 채팅으로 세부사항 조율</div>
+            <div style={styles.infoBullet}>2️⃣ AI가 추천하는 케어 플랜 검토</div>
+            <div style={styles.infoBullet}>3️⃣ 케어 시작 날짜 확정</div>
+            <div style={styles.infoBullet}>4️⃣ 케어 진행 상황 모니터링</div>
           </div>
-        </div>
-
-        {/* Info Card */}
-        <div style={styles.infoCard}>
-          <div style={styles.infoCardTitle}>📋 매칭 후 절차</div>
-          <div style={styles.infoBullet}>1️⃣ 간병인과 채팅으로 세부사항 조율</div>
-          <div style={styles.infoBullet}>2️⃣ AI가 추천하는 케어 플랜 검토</div>
-          <div style={styles.infoBullet}>3️⃣ 케어 시작 날짜 확정</div>
-          <div style={styles.infoBullet}>4️⃣ 케어 진행 상황 모니터링</div>
         </div>
       </div>
-    </div>
     </>
   )
 }

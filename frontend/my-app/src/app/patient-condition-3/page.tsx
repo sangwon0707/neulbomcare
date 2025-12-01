@@ -1,335 +1,126 @@
 "use client"
 
-import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { ChevronLeft } from 'lucide-react'
-import { apiPost, apiGet } from '@/utils/api'
-import ErrorAlert from '@/components/ErrorAlert'
-import MedicationOCR from '@/components/MedicationOCR'
-import type { MedicationsCreateRequest, MedicationResponse, DietaryPreferencesCreateRequest, DietaryPreferencesApiResponse } from '@/types/api'
+import React, { useState } from "react"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
+import { ChevronLeft, ChevronRight, Camera } from "lucide-react"
+import { cn } from "@/utils/cn"
 
 export default function PatientCondition3Page() {
   const router = useRouter()
-  const [currentMed, setCurrentMed] = useState('')
-  const [medicine_names, setMedicineNames] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
-  const [dataLoading, setDataLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
-  const [patientId, setPatientId] = useState<number | null>(null)
-
-  // 식이 선호 상태
-  const [currentAllergy, setCurrentAllergy] = useState('')
-  const [allergyFoods, setAllergyFoods] = useState<string[]>([])
-  const [currentRestriction, setCurrentRestriction] = useState('')
-  const [restrictionFoods, setRestrictionFoods] = useState<string[]>([])
-
-
-  const handleAddMedication = (e?: React.KeyboardEvent) => {
-    if (e && e.key !== 'Enter') return
-    if (currentMed.trim()) {
-      setMedicineNames([...medicine_names, currentMed.trim()])
-      setCurrentMed('')
-    }
-  }
-
-  const handleRemoveMedication = (index: number) => {
-    setMedicineNames(medicine_names.filter((_, i) => i !== index))
-  }
-
-  // 알러지 음식 추가/삭제
-  const handleAddAllergy = (e?: React.KeyboardEvent) => {
-    if (e && e.key !== 'Enter') return
-    if (currentAllergy.trim()) {
-      setAllergyFoods([...allergyFoods, currentAllergy.trim()])
-      setCurrentAllergy('')
-    }
-  }
-
-  const handleRemoveAllergy = (index: number) => {
-    setAllergyFoods(allergyFoods.filter((_, i) => i !== index))
-  }
-
-  // 식이 제한 음식 추가/삭제
-  const handleAddRestriction = (e?: React.KeyboardEvent) => {
-    if (e && e.key !== 'Enter') return
-    if (currentRestriction.trim()) {
-      setRestrictionFoods([...restrictionFoods, currentRestriction.trim()])
-      setCurrentRestriction('')
-    }
-  }
-
-  const handleRemoveRestriction = (index: number) => {
-    setRestrictionFoods(restrictionFoods.filter((_, i) => i !== index))
-  }
-
-  // 🔧 기존 약물 정보 및 식이 선호 불러오기
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const patientIdFromStorage = sessionStorage.getItem('patient_id')
-        if (!patientIdFromStorage) {
-          setDataLoading(false)
-          return
-        }
-
-        setPatientId(Number(patientIdFromStorage))
-
-        // 약물 정보 로드
-        try {
-          const medResponse = await apiGet<any>(`/api/patients/${patientIdFromStorage}/medications`)
-          console.log('[PatientCondition3] Medications loaded:', medResponse)
-          if (medResponse?.medicine_names && medResponse.medicine_names.length > 0) {
-            setMedicineNames(medResponse.medicine_names)
-          }
-        } catch (err) {
-          console.log('[PatientCondition3] No existing medication data:', err)
-        }
-
-        // 식이 선호 정보 로드
-        try {
-          const dietResponse = await apiGet<DietaryPreferencesApiResponse>(`/api/patients/${patientIdFromStorage}/dietary-preferences`)
-          console.log('[PatientCondition3] Dietary preferences loaded:', dietResponse)
-          if (dietResponse?.allergy_foods) {
-            setAllergyFoods(dietResponse.allergy_foods)
-          }
-          if (dietResponse?.restriction_foods) {
-            setRestrictionFoods(dietResponse.restriction_foods)
-          }
-        } catch (err) {
-          console.log('[PatientCondition3] No existing dietary preferences:', err)
-        }
-      } finally {
-        setDataLoading(false)
-      }
-    }
-
-    loadData()
-  }, [])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const patientId = sessionStorage.getItem('patient_id')
-    if (!patientId) {
-      alert('환자 정보를 먼저 등록해주세요.')
-      router.push('/patient-condition-1')
-      return
-    }
-
-    setLoading(true)
-    setError(null)
-
-    try {
-      // 🔧 약물 정보 저장 (있는 경우)
-      if (medicine_names.length > 0) {
-        const payload: MedicationsCreateRequest = {
-          medicine_names: medicine_names
-        }
-
-        const response = await apiPost<MedicationResponse>(
-          `/api/patients/${patientId}/medications`,
-          payload
-        )
-
-        console.log('[PatientCondition3] 약물 정보 저장 성공:', response)
-      } else {
-        console.log('[PatientCondition3] 약물 정보 없음 (선택사항)')
-      }
-
-      // 🔧 식이 선호 정보 저장 (있는 경우)
-      if (allergyFoods.length > 0 || restrictionFoods.length > 0) {
-        const dietPayload: DietaryPreferencesCreateRequest = {
-          allergy_foods: allergyFoods,
-          restriction_foods: restrictionFoods
-        }
-
-        const dietResponse = await apiPost<DietaryPreferencesApiResponse>(
-          `/api/patients/${patientId}/dietary-preferences`,
-          dietPayload
-        )
-
-        console.log('[PatientCondition3] 식이 선호 저장 성공:', dietResponse)
-      } else {
-        console.log('[PatientCondition3] 식이 선호 없음 (선택사항)')
-      }
-
-      // 🔧 모든 환자 정보 저장 완료
-      console.log('[PatientCondition3] 환자 정보 저장 완료 (조건1+조건2+조건3)')
-      console.log('[PatientCondition3] Patient ID:', patientId)
-
-      // 다음 페이지로 이동 (모든 데이터가 저장됨)
-      router.push('/caregiver-finder')
-    } catch (err) {
-      console.error('[PatientCondition3] 정보 저장 실패:', err)
-      setError(err as Error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  const [medicationList, setMedicationList] = useState("")
+  const [allergyFood, setAllergyFood] = useState("")
+  const [restrictedFood, setRestrictedFood] = useState("")
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#f9f7f2] overflow-hidden font-['Pretendard']">
-      <ErrorAlert error={error} onClose={() => setError(null)} />
+    <div className="min-h-screen bg-white flex flex-col">
+      {/* Header */}
+      <header className="sticky top-0 z-10 bg-white px-4 pt-4 pb-2">
+        <div className="flex items-center mb-4">
+          <button
+            onClick={() => router.back()}
+            className="p-2 -ml-2 text-gray-600"
+            aria-label="Go back"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
 
-      <div className="flex items-center px-5 py-4 border-b border-gray-100 shrink-0">
-        <button
-          onClick={() => router.push('/patient-condition-2')}
-          className="text-[#18D4C6] bg-transparent border-none cursor-pointer"
-        >
-          <ChevronLeft className="w-6 h-6" />
-        </button>
-        <div className="flex-1 mx-5">
-          <div className="w-full h-1 bg-transparent rounded-sm flex gap-1">
-            <div className="flex-1 h-full bg-[#18D4C6] rounded-sm"></div>
-            <div className="flex-1 h-full bg-[#18D4C6] rounded-sm"></div>
-            <div className="flex-1 h-full bg-[#18D4C6] rounded-sm"></div>
-            <div className="flex-1 h-full bg-[#18D4C6] rounded-sm"></div>
-            <div className="flex-1 h-full bg-gray-200 rounded-sm"></div>
+          {/* Progress Bar */}
+          <div className="flex-1 flex gap-2 ml-4 mr-2">
+            <div className="h-1 flex-1 bg-[#18d4c6] rounded-full" />
+            <div className="h-1 flex-1 bg-[#18d4c6] rounded-full" />
+            <div className="h-1 flex-1 bg-[#18d4c6] rounded-full" />
+            <div className="h-1 flex-1 bg-[#18d4c6] rounded-full" />
+            <div className="h-1 flex-1 bg-gray-200 rounded-full" />
           </div>
         </div>
-        <div className="w-8"></div> {/* Spacer to balance the header since Skip is removed */}
-      </div>
 
-      <div className="flex-1 overflow-y-auto px-5 py-8">
-        <div className="mb-8">
-          <h2 className="text-[26px] text-gray-800 mb-2">복용 중인 약이 있나요?</h2>
-          <p className="text-[14px] text-gray-600">정확한 복약 관리를 위해 필요합니다</p>
-        </div>
+        <div className="h-px bg-gray-100 -mx-4" />
+      </header>
 
-        <form onSubmit={handleSubmit}>
-          {/* OCR 컴포넌트 - 실제 기능 */}
-          {patientId && (
-            <div className="mb-8">
-              <MedicationOCR
-                patientId={patientId}
-                onMedicinesSelected={(medicines) => {
-                  console.log('[PatientCondition3] OCR에서 선택된 약물:', medicines)
-                  // OCR에서 추출된 약물을 기존 목록에 병합
-                  setMedicineNames((prev) => {
-                    const newMedicines = medicines.filter((m) => !prev.includes(m))
-                    return [...prev, ...newMedicines]
-                  })
-                }}
-                onConfirmMedicines={(medicines) => {
-                  console.log('[PatientCondition3] 사용자가 약물 선택 확정:', medicines)
-                  // 약물 목록에 표시됨 (onMedicinesSelected에서 이미 추가됨)
-                }}
-              />
-            </div>
-          )}
+      <main className="flex-1 px-8 pt-6 pb-32 overflow-y-auto">
+        {/* Medication Section */}
+        <div className="mb-12">
+          <div className="mb-8">
+            <h1 className="text-[28px] font-bold text-[#353535] mb-2">복용 중인 약이 있나요?</h1>
+            <p className="text-base font-bold text-[#828282]">정확한 복약 관리를 위해 필요합니다.</p>
+          </div>
 
-          {/* 기존 옵션들 (OCR 아래) */}
-          <div className="bg-gray-50 rounded-2xl p-5 mb-6">
-            <div className="text-[12px] font-semibold text-gray-600 mb-3">또는 다음 방법을 사용하세요</div>
-            <div className="flex items-start gap-4 p-4 bg-white rounded-xl cursor-pointer hover:bg-gray-50 transition-all">
-              <div className="text-4xl shrink-0">✏️</div>
-              <div className="flex-1">
-                <div className="text-[15px] font-semibold text-gray-800 mb-1">약 이름 직접 입력</div>
-                <div className="text-[12px] text-gray-600">자동완성 지원</div>
+          {/* Camera Button */}
+          <div className="flex flex-col items-center mb-4">
+            <button className="w-[200px] h-[150px] border-2 border-[#18d4c6] rounded-[10px] flex flex-col items-center justify-center gap-3 bg-white shadow-sm hover:bg-[#e8fffd] transition-colors">
+              <div className="w-16 h-12 flex items-center justify-center relative">
+                <Image
+                  src="/assets/camera.svg"
+                  alt="Camera"
+                  width={64}
+                  height={48}
+                  className="object-contain"
+                />
               </div>
-            </div>
+              <div className="w-[160px] h-9 bg-[#18d4c6] rounded flex items-center justify-center">
+                <span className="text-sm font-bold text-white">약봉지 사진 촬영</span>
+              </div>
+            </button>
+            <p className="text-xs text-[#828282] mt-3">구겨지면 인식이 잘 안될 수 있습니다.</p>
           </div>
 
-          <div className="mb-6">
-            <div className="text-[14px] font-semibold text-gray-800 mb-3">약물 목록</div>
+          {/* Medication List Input */}
+          <div className="space-y-2">
+            <label className="text-lg font-bold text-[#353535]">약물 목록</label>
             <input
-              name="currentMed"
               type="text"
-              className="w-full px-4 py-4 border-2 border-dashed border-gray-200 rounded-xl text-[15px] text-black bg-white"
-              placeholder="약 이름을 입력하세요 (예: 아스피린, 메트포민...)"
-              value={currentMed}
-              onChange={(e) => setCurrentMed(e.target.value)}
-              onKeyDown={handleAddMedication}
+              value={medicationList}
+              onChange={(e) => setMedicationList(e.target.value)}
+              placeholder="약 이름을 입력하세요 (예:아스피린, 메트포민...)"
+              className="w-full h-12 px-5 rounded-[10px] border border-[#828282] text-sm placeholder:text-[#828282] focus:outline-none focus:border-[#18d4c6]"
+            />
+          </div>
+        </div>
+
+        {/* Dietary Section */}
+        <div className="mb-8">
+          <div className="mb-6">
+            <h2 className="text-[28px] font-bold text-[#353535] mb-2">식이 정보 (선택사항)</h2>
+            <p className="text-base font-bold text-[#828282]">알러지나 식이 제한이 있으면 입력해주세요</p>
+          </div>
+
+          {/* Allergy Input */}
+          <div className="space-y-2 mb-8">
+            <label className="text-lg font-bold text-[#353535]">알러지 음식</label>
+            <input
+              type="text"
+              value={allergyFood}
+              onChange={(e) => setAllergyFood(e.target.value)}
+              placeholder="알러지 음식을 입력하세요 (예: 땅콩, 갑각류, 우유...)"
+              className="w-full h-12 px-5 rounded-[10px] border border-[#828282] text-sm placeholder:text-[#828282] focus:outline-none focus:border-[#18d4c6]"
             />
           </div>
 
-          <div className="flex flex-wrap gap-2 mb-6">
-            {medicine_names.map((med, index) => (
-              <div key={index} className="inline-flex items-center gap-2 bg-purple-100 text-purple-900 px-3 py-2 rounded-full text-[14px]">
-                <span>{med}</span>
-                <span
-                  className="cursor-pointer font-bold text-lg leading-none"
-                  onClick={() => handleRemoveMedication(index)}
-                >
-                  ×
-                </span>
-              </div>
-            ))}
+          {/* Restricted Food Input */}
+          <div className="space-y-2">
+            <label className="text-lg font-bold text-[#353535]">식이 제한 음식</label>
+            <input
+              type="text"
+              value={restrictedFood}
+              onChange={(e) => setRestrictedFood(e.target.value)}
+              placeholder="피해야 할 음식을 입력하세요 (예: 짠 음식, 고지방 음식)"
+              className="w-full h-12 px-5 rounded-[10px] border border-[#828282] text-sm placeholder:text-[#828282] focus:outline-none focus:border-[#18d4c6]"
+            />
           </div>
+        </div>
+      </main>
 
-          {/* 식이 선호 섹션 */}
-          <div className="mt-8 mb-6 pt-6 border-t border-gray-200">
-            <h3 className="text-[20px] text-gray-800 mb-2">식이 정보 (선택사항)</h3>
-            <p className="text-[13px] text-gray-600 mb-6">알러지나 식이 제한이 있으면 입력해주세요</p>
-
-            {/* 알러지 음식 */}
-            <div className="mb-6">
-              <div className="text-[14px] font-semibold text-gray-800 mb-3">🚫 알러지 음식</div>
-              <input
-                name="currentAllergy"
-                type="text"
-                className="w-full px-4 py-4 border-2 border-dashed border-red-200 rounded-xl text-[15px] text-black bg-white"
-                placeholder="알러지 음식을 입력하세요 (예: 땅콩, 갑각류, 우유...)"
-                value={currentAllergy}
-                onChange={(e) => setCurrentAllergy(e.target.value)}
-                onKeyDown={handleAddAllergy}
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-2 mb-6">
-              {allergyFoods.map((food, index) => (
-                <div key={index} className="inline-flex items-center gap-2 bg-red-100 text-red-900 px-3 py-2 rounded-full text-[14px]">
-                  <span>{food}</span>
-                  <span
-                    className="cursor-pointer font-bold text-lg leading-none"
-                    onClick={() => handleRemoveAllergy(index)}
-                  >
-                    ×
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* 식이 제한 음식 */}
-            <div className="mb-6">
-              <div className="text-[14px] font-semibold text-gray-800 mb-3">⚠️ 식이 제한 음식</div>
-              <input
-                name="currentRestriction"
-                type="text"
-                className="w-full px-4 py-4 border-2 border-dashed border-orange-200 rounded-xl text-[15px] text-black bg-white"
-                placeholder="피해야 할 음식을 입력하세요 (예: 짠 음식, 고지방 음식...)"
-                value={currentRestriction}
-                onChange={(e) => setCurrentRestriction(e.target.value)}
-                onKeyDown={handleAddRestriction}
-              />
-            </div>
-
-            <div className="flex flex-wrap gap-2 mb-6">
-              {restrictionFoods.map((food, index) => (
-                <div key={index} className="inline-flex items-center gap-2 bg-orange-100 text-orange-900 px-3 py-2 rounded-full text-[14px]">
-                  <span>{food}</span>
-                  <span
-                    className="cursor-pointer font-bold text-lg leading-none"
-                    onClick={() => handleRemoveRestriction(index)}
-                  >
-                    ×
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-8 pb-3">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full px-5 py-[18px] bg-[#18D4C6] text-white border-none rounded-xl text-[17px] font-semibold cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? '저장 중...' : '다음'}
-            </button>
-          </div>
-        </form>
-      </div>
+      {/* Footer */}
+      <footer className="fixed bottom-0 left-0 right-0 bg-white px-8 pb-8 pt-4">
+        <button
+          onClick={() => router.push('/caregiver-finder')} // Assuming next step
+          className="w-full h-14 bg-[#18d4c6] rounded-[10px] flex items-center justify-center gap-1 shadow-[1px_1px_2px_rgba(125,140,139,0.5)] hover:bg-[#15bkb0] transition-colors"
+        >
+          <span className="text-lg font-bold text-white">다음</span>
+          <ChevronRight className="w-6 h-6 text-white" />
+        </button>
+      </footer>
     </div>
   )
 }
